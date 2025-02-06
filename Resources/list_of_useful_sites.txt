@@ -1,0 +1,31 @@
+#Pico
+https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf
+
+#Pico Adafruit
+https://learn.adafruit.com/adafruit-picowbell-can-bus-for-pico/arduino
+https://www.mouser.com/datasheet/2/737/adafruit_picowbell_can_bus_for_pico-3402464.pdf
+https://coolcomponents.co.uk/products/picowbell-can-bus-for-pico-mcp2515-can-controller#:~:text=Pre%2Dconnected%20CS%>
+
+#Pico Can B
+https://www.waveshare.com/wiki/Pico-CAN-B
+
+#Haltech
+https://support.haltech.com/portal/en/kb/articles/elite-1500-2500-can-communications-wiring-guide
+https://support.haltech.com/portal/en/kb/articles/haltech-can-protocol-specification
+https://support.haltech.com/portal/en/kb/articles/haltech-can-ecu-broadcast-protocol
+https://support.haltech.com/portal/en/kb/articles/devices#:~:text=CAN%20bus%20system.-,OBDII,trouble%20codes%20and%20sensor%20data.
+
+#Elecrow Tutorials
+https://www.elecrow.com/wiki/esp32-display-502727-intelligent-touch-screen-wi-fi26ble-800480-hmi-display.html
+https://www.elecrow.com/wiki/Get_Started_with_SquareLine_Studio.html
+https://www.youtube.com/playlist?list=PLwh4PlcPx2GcKJ17Z_xcAxQoh-Tmms_X1
+https://www.elecrow.com/wiki/ESP32_Display_5.0-inch_HMI_Arduino_Tutorial.html
+https://www.elecrow.com/wiki/5-inch-esp32-dispaly-platformio-tutorial.html
+https://www.elecrow.com/wiki/CrowPanel-ESP32-5.0-inch-with-ESP-IDF.html
+
+#General stuff for Esp32 including Canbus and I2C
+https://github.com/espressif/esp-idf/tree/c5865270/examples/peripherals/twai/twai_network
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/api-reference/peripherals/twai.html
+https://arduino-pico.readthedocs.io/en/latest/wire.html
+https://docs.lvgl.io/master/intro/introduction.html
+https://github.com/handmade0octopus/ESP32-TWAI-CAN
