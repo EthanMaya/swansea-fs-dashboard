@@ -12,7 +12,7 @@
 
 #define TFT_BL 2
 //define i2c
-//#define can
+#define can
 
 
 
