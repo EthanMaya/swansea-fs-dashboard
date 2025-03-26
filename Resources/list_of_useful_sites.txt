@@ -29,3 +29,4 @@ https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/api-reference/peri
 https://arduino-pico.readthedocs.io/en/latest/wire.html
 https://docs.lvgl.io/master/intro/introduction.html
 https://github.com/handmade0octopus/ESP32-TWAI-CAN
+https://docs.golioth.io/getting-started/device-examples/compile-example-code/esp-idf/set-up-espidf/
