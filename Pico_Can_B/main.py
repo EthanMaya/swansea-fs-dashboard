@@ -3,6 +3,7 @@
 
 from machine import Pin,SPI,PWM
 import time
+import random
 
 led = Pin(25, Pin.OUT)
 ## Configuration Registers */
@@ -309,6 +310,7 @@ REQOP_LISTEN = 0x60
 REQOP_LOOPBACK  =0x40
 REQOP_SLEEP  = 0x20
 REQOP_NORMAL = 0x00
+#REQOP_NORMAL = REQOP_LOOPBACK
 
 ABORT        = 0x10
 
@@ -527,9 +529,23 @@ class MCP2515():
 					break
 		self.WriteByte(CAN_RTS_TXB0)
 
-	
-		
+	def ReadMessage(self):
+		if self.ReadByte(CANINTF) & 0x01:
+			sidH = self.ReadByte(RXB0SIDH)
+			sidL = self.ReadByte(RXB0SIDL)
 
+			can_id = (sidH << 3) | (sidL >> 5)
+			dlc = self.ReadByte(RXB0DLC) & 0x0F
+
+			data = [0]*dlc
+			for i in range(dlc):
+				data[i] = self.ReadByte(RXB0D0+i)
+
+			self.WriteBytes(CANINTF, 0x00)
+			return  (can_id, dlc, data)
+		return None, None, None
+                
+		
 if __name__ == '__main__':
 	print("--------------------------------------------------------")
 	can = MCP2515()
@@ -537,25 +553,19 @@ if __name__ == '__main__':
 	can.Init()
 	print("send data...")
 	id = 0x123 #max 7ff
-	data = [1, 2, 3, 4, 5, 6, 7, 8]
-	dlc = 8
-	can.Send(id, data, dlc)
+	s = random.seed(42)
+	data = [98, 100, 4, 200]
+	dlc = len(data)
 
-	readbuf = []
-	# while(1):
-	led = Pin(25, Pin.OUT)
-	led.on()
-	time.sleep(1)
-	led.off()
-	print("Why")
 	while True:
-		print("AHHH")
 		led.on()
 		can.Send(id, data, dlc)
+		print(f"Send id: {id}, dlc: {dlc}, data: {data}")
 		time.sleep(0.5)
 		led.off()
+		#r_id, r_dlc, r_data = can.ReadMessage()
+		#print(f"id: {r_id}, dlc: {r_dlc}, data: {r_data}")
 		time.sleep(0.5)
-		print("help")
 		
 
 	print("--------------------------------------------------------")

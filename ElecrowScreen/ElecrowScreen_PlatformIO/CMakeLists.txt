@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+project(SwanseaFsDashboard)
+set(LV_CONF_PATH="${PROJECT_DIR}/include/lv_conf.h")
+set (CMAKE_EXPORT_COMPILE_COMMANDS on)
+add_compile_options(-Wno-unused )
