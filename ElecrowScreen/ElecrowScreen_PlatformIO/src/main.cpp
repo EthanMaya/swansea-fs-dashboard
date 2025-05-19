@@ -1,35 +1,18 @@
-#include <lvgl.h>
-#include <ESP32-TWAI-CAN.hpp>
-#include "ui_code.hpp"
 #include "ui.h"
+#include "ui_code.hpp"
+#include <ESP32-TWAI-CAN.hpp>
+#include <lvgl.h>
 
 #define CAN_TX 44
 #define CAN_RX 43
 #define SPEED 1000
-#define HAS_DISPLAY 1
-//#define P 43
-//works   38 44 43
-//doesn't 19
+#define HAS_DISPLAY 0
+// #define P 43
+// works   38 44 43
+// doesn't 19
 typedef u_int8_t u8;
 typedef u_int16_t u16;
 CanFrame rxFrame;
-
-void setup()
-{
-  Serial.begin(9600);
-
-  auto SUCCESS = 
-      ESP32Can.begin(ESP32Can.convertSpeed(SPEED), CAN_TX, CAN_RX, 10, 10);
-    if (SUCCESS) {
-      Serial.println("CAN bus started!");
-    } else {
-      Serial.println("CAN bus failed!");
-    }
-    
-#if (HAS_DISPLAY)
-    init_screen();
-  #endif
-}
 
 #if (HAS_DISPLAY)
 lv_obj_t **e_Throttle_Bar = &ui_Bar2;
@@ -45,59 +28,71 @@ u8 temperature = 0;
 u8 pressure = 0;
 char gear = -1;
 u8 temp = 0;
-void loop()
-{ //while
-  //0x360 rpm 0-1
-  //0x360 throttle 4-5
-  //0x361 oil press 0-1
-  //0x3E0 6-7 oil temp
-  //0x470 6 gear selector position
+char buf[16];
 
-    boolean nothingToOutput = true;
-    while (nothingToOutput) {
-      Serial.println("No output");
-      if (ESP32Can.readFrame(rxFrame, 1000))
-      {      
-        if (rxFrame.identifier == 0x470) { //gear sel check
-            gear = rxFrame.data[7];          
-            nothingToOutput = false;
-          }
-          if (rxFrame.identifier == 0x471) { //apps
-            u16 bit0 = rxFrame.data[2];
-            u16 bit1 = rxFrame.data[3];   
-            throttle = ((bit0 << 8) | bit1) / 10.0;       
-            nothingToOutput = false;
-          }
-      }
-        
-    }
+void setup() {
+  Serial.begin(9600);
+
+  auto SUCCESS =
+      ESP32Can.begin(ESP32Can.convertSpeed(SPEED), CAN_TX, CAN_RX, 10, 10);
+  if (SUCCESS) {
+    Serial.println("CAN bus started!");
+  } else {
+    Serial.println("CAN bus failed!");
+  }
 
 #if (HAS_DISPLAY)
-    char buf[16];
-    lv_snprintf(buf, sizeof(buf), "%d", throttle);
-    lv_label_set_text(*e_Throttle_Num, buf);
-    lv_bar_set_value(*e_Throttle_Bar, throttle, LV_ANIM_OFF);
-    lv_snprintf(buf, sizeof(buf), "%d", temperature);
-    lv_label_set_text(*e_Temperature, buf);
-    lv_snprintf(buf, sizeof(buf), "%d", gear);
-    lv_label_set_text(*e_Gear_Position, buf);
-    
-    lv_snprintf(buf, sizeof(buf), "%d", pressure);
-    lv_label_set_text(*e_Pressure, buf);
-    
-
-    // temp++;//check engine light, battery voltage, oil temp press light, shift light/lights, vehicle speed, rpm
-    /*if batt voltage below amount blink, oil pres, shift lights
-    most important
-    rpm, 
-    */
-
-
-    lv_timer_handler(); /* let the GUI do its work */
-    delay(10);
+  init_screen();
 #endif
+}
 
+void loop() { // while
+              // 0x360 rpm 0-1
+              // 0x360 throttle 4-5
+              // 0x361 oil press 0-1
+              // 0x3E0 6-7 oil temp
+              // 0x470 6 gear selector position
 
+  boolean nothingToOutput = true;
+  while (nothingToOutput) {
+    Serial.println("No output");
+    if (ESP32Can.readFrame(rxFrame, 1000)) {
+      if (rxFrame.identifier == 0x470) { // gear sel check
+        gear = rxFrame.data[7];
+        nothingToOutput = false;
+      }
+      if (rxFrame.identifier == 0x471) { // apps
+        u16 bit0 = rxFrame.data[2];
+        u16 bit1 = rxFrame.data[3];
+        throttle = ((bit0 << 8) | bit1) / 10.0;
+        nothingToOutput = false;
+      }
+    }
+  }
+
+#if (HAS_DISPLAY)
+  char buf[16];
+  lv_snprintf(buf, sizeof(buf), "%d", throttle);
+  lv_label_set_text(*e_Throttle_Num, buf);
+  lv_bar_set_value(*e_Throttle_Bar, throttle, LV_ANIM_OFF);
+  lv_snprintf(buf, sizeof(buf), "%d", temperature);
+  lv_label_set_text(*e_Temperature, buf);
+  lv_snprintf(buf, sizeof(buf), "%d", gear);
+  lv_label_set_text(*e_Gear_Position, buf);
+
+  lv_snprintf(buf, sizeof(buf), "%d", pressure);
+  lv_label_set_text(*e_Pressure, buf);
+
+  // temp++;//check engine light, battery voltage, oil temp press light, shift
+  // light/lights, vehicle speed, rpm
+  /*if batt voltage below amount blink, oil pres, shift lights
+  most important
+  rpm,
+  */
+
+  lv_timer_handler(); /* let the GUI do its work */
+  delay(10);
+#endif
 }
 
 // #include "ui.h"
@@ -169,8 +164,6 @@ void loop()
 // #endif
 // }
 
-
-
 // if(false) {
 //           // if (rxFrame.identifier == 0x471) { //Accelerator Pedal Position
 //           //   u16 bit0 = rxFrame.data[2];
@@ -179,7 +172,8 @@ void loop()
 //           //   //temperature /= 10;
 //           //   nothingToOutput = false;
 //           // }
-//           if (rxFrame.identifier == 0x360) { //Shoud be Throttle Position is Gear position
+//           if (rxFrame.identifier == 0x360) { //Shoud be Throttle Position is
+//           Gear position
 //             u8 temp = rxFrame.data[5];
 //             temp -= 964;
 //             if (temp <5) {
@@ -205,7 +199,7 @@ void loop()
 //             throttle = (bit0 << 8) | bit1;
 //             nothingToOutput = false;
 //           }
-          
+
 //           if (rxFrame.identifier == 0x361) { //oil press
 //             pressure = rxFrame.data[1];
 //             pressure = pressure;
@@ -218,7 +212,7 @@ void loop()
 
 //           }
 //           if (rxFrame.identifier == 0x470) { //gear sel
-//             pressure = rxFrame.data[6];          
+//             pressure = rxFrame.data[6];
 //             nothingToOutput = false;
 //           }
 //       } else{
