@@ -30,6 +30,31 @@ char gear = -1;
 u8 temp = 0;
 char buf[16];
 
+void handle_gear_selection(const CanFrame &rxFrame) {
+  gear = rxFrame.data[7];
+  lv_snprintf(buf, sizeof(buf), "%d", gear);
+#if (HAS_DISPLAY)
+  lv_label_set_text(*e_Gear_Position, buf);
+#else
+  Serial.print("Gear: ");
+  Serial.println(buf);
+#endif
+}
+
+void handle_accelerator_pedal(const CanFrame &rxFrame) {
+  u16 bit0 = rxFrame.data[2];
+  u16 bit1 = rxFrame.data[3];
+  throttle = ((bit0 << 8) | bit1) / 10.0;
+  lv_snprintf(buf, sizeof(buf), "%d", throttle);
+#if (HAS_DISPLAY)
+  lv_label_set_text(*e_Throttle_Num, buf);
+  lv_bar_set_value(*e_Throttle_Bar, throttle, LV_ANIM_OFF);
+#else
+  Serial.print("Throttle: ");
+  Serial.println(buf);
+#endif
+}
+
 void setup() {
   Serial.begin(9600);
 
