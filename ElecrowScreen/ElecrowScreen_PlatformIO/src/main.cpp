@@ -5,12 +5,12 @@
 #include <ESP32-TWAI-CAN.hpp>
 #include <lvgl.h>
 
-// #define CAN_TX 44
-// #define CAN_RX 43
-#define CAN_TX 5
-#define CAN_RX 4
+#define CAN_TX 44
+#define CAN_RX 43
+//#define CAN_TX 5
+//#define CAN_RX 4
 #define SPEED 1000
-#define HAS_DISPLAY 0
+#define HAS_DISPLAY 1
 // #define P 43
 // works   38 44 43
 // doesn't 19
@@ -135,11 +135,13 @@ void handle_oil_temp(const CanFrame &rxFrame) {
 
 void handle_gear_selection(const CanFrame &rxFrame) {
   // 0x470; bits 7; gear position; enum val ??
-  u16 gear_val = rxFrame.data[7];
+  u16 gear_val = rxFrame.data[6];
   lv_snprintf(buf, sizeof(buf), "%d", gear_val);
 #if (HAS_DISPLAY)
   // Update display
-  ;
+  lv_label_set_text(ui_Label7, buf);
+  lv_timer_handler();
+  delay(10);
 #else
   Serial.print("Gear: ");
   Serial.println(buf);
