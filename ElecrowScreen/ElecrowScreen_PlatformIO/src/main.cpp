@@ -57,19 +57,65 @@ void loop()
     while (nothingToOutput) {
       Serial.println("No output");
       if (ESP32Can.readFrame(rxFrame, 1000))
-      {      
-        if (rxFrame.identifier == 0x470) { //gear sel check
-            gear = rxFrame.data[7];          
+      {
+        Serial.println(rxFrame.identifier);
+
+        if(true) {
+          // if (rxFrame.identifier == 0x471) { //Accelerator Pedal Position
+          //   u16 bit0 = rxFrame.data[2];
+          //   u16 bit1 = rxFrame.data[3];
+          //   temperature = (bit0 << 8) | bit1;
+          //   //temperature /= 10;
+          //   nothingToOutput = false;
+          // }
+          if (rxFrame.identifier == 0x360) { //Shoud be Throttle Position is Gear position
+            u8 temp = rxFrame.data[5];
+            temp -= 964;
+            if (temp <5) {
+              gear = 'N';
+            } else if (temp < 10) {
+              gear = 1;
+            } else if (temp < 15) {
+              gear = 2;
+            } else if (temp < 20) {
+              gear = 3;
+            } else if (temp < 25) {
+              gear = 4;
+            } else {
+              gear = 5;
+            }
+            nothingToOutput = false;
+        }
+        } else {
+          if (rxFrame.identifier == 0x360) { //rpm
+            u16 bit0 = rxFrame.data[0];
+            u16 bit1 = rxFrame.data[1];
+            throttle = (bit0 << 8) | bit1;
             nothingToOutput = false;
           }
-          if (rxFrame.identifier == 0x471) { //apps
-            u16 bit0 = rxFrame.data[2];
-            u16 bit1 = rxFrame.data[3];   
-            throttle = ((bit0 << 8) | bit1) / 10.0;       
+          
+          if (rxFrame.identifier == 0x361) { //oil press
+            pressure = rxFrame.data[1];
+            pressure = pressure;
+
+            nothingToOutput = false;
+          }
+          if (rxFrame.identifier == 0x3E0) {//oil temp
+            gear = rxFrame.data[2];
+            nothingToOutput = false;
+
+          }
+          if (rxFrame.identifier == 0x470) { //gear sel
+            pressure = rxFrame.data[6];          
             nothingToOutput = false;
           }
       }
-        
+        Serial.printf("ID: %d", rxFrame.identifier);
+        Serial.printf("Throttle %d \r\n", throttle);
+        Serial.printf("Temperature %d \r\n", temperature);
+        Serial.printf("Gear %d \r\n", gear);
+        Serial.printf("Pressure %d \r\n\n", pressure);
+      }
     }
 
 #if (HAS_DISPLAY)
@@ -80,17 +126,18 @@ void loop()
     lv_snprintf(buf, sizeof(buf), "%d", temperature);
     lv_label_set_text(*e_Temperature, buf);
     lv_snprintf(buf, sizeof(buf), "%d", gear);
-    lv_label_set_text(*e_Gear_Position, buf);
-    
+    if (gear == 'N') {
+      lv_label_set_text(*e_Gear_Position, "N");
+    }
+    else
+    {
+      lv_label_set_text(*e_Gear_Position, buf);
+    }
     lv_snprintf(buf, sizeof(buf), "%d", pressure);
     lv_label_set_text(*e_Pressure, buf);
     
 
-    // temp++;//check engine light, battery voltage, oil temp press light, shift light/lights, vehicle speed, rpm
-    /*if batt voltage below amount blink, oil pres, shift lights
-    most important
-    rpm, 
-    */
+    // temp++;
 
 
     lv_timer_handler(); /* let the GUI do its work */
@@ -168,63 +215,3 @@ void loop()
 //   lv_timer_handler(); /* let the GUI do its work */
 // #endif
 // }
-
-
-
-// if(false) {
-//           // if (rxFrame.identifier == 0x471) { //Accelerator Pedal Position
-//           //   u16 bit0 = rxFrame.data[2];
-//           //   u16 bit1 = rxFrame.data[3];
-//           //   temperature = (bit0 << 8) | bit1;
-//           //   //temperature /= 10;
-//           //   nothingToOutput = false;
-//           // }
-//           if (rxFrame.identifier == 0x360) { //Shoud be Throttle Position is Gear position
-//             u8 temp = rxFrame.data[5];
-//             temp -= 964;
-//             if (temp <5) {
-//               gear = 'N';
-//             } else if (temp < 10) {
-//               gear = 1;
-//             } else if (temp < 15) {
-//               gear = 2;
-//             } else if (temp < 20) {
-//               gear = 3;
-//             } else if (temp < 25) {
-//               gear = 4;
-//             } else {
-//               gear = 5;
-//             }
-//             nothingToOutput = false;
-//         }//apps
-//         //gear selector position
-//         } else if (false) {
-//           if (rxFrame.identifier == 0x360) { //rpm
-//             u16 bit0 = rxFrame.data[0];
-//             u16 bit1 = rxFrame.data[1];
-//             throttle = (bit0 << 8) | bit1;
-//             nothingToOutput = false;
-//           }
-          
-//           if (rxFrame.identifier == 0x361) { //oil press
-//             pressure = rxFrame.data[1];
-//             pressure = pressure;
-
-//             nothingToOutput = false;
-//           }
-//           if (rxFrame.identifier == 0x3E0) {//oil temp
-//             gear = rxFrame.data[2];
-//             nothingToOutput = false;
-
-//           }
-//           if (rxFrame.identifier == 0x470) { //gear sel
-//             pressure = rxFrame.data[6];          
-//             nothingToOutput = false;
-//           }
-//       } else{
-
-// Serial.printf("ID: %d", rxFrame.identifier);
-//         Serial.printf("Throttle %d \r\n", throttle);
-//         Serial.printf("Temperature %d \r\n", temperature);
-//         Serial.printf("Gear %d \r\n", gear);
-//         Serial.printf("Pressure %d \r\n\n", pressure);
