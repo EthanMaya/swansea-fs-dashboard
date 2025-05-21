@@ -3,6 +3,7 @@
 
 from machine import Pin,SPI,PWM
 import time
+import random
 
 led = Pin(25, Pin.OUT)
 ## Configuration Registers */
@@ -151,7 +152,7 @@ BUKT         = 0x04
 # ## CANCTRL */
 REQOP        = 0xE0
 ABAT         = 0x10
-#define	OSM          = 0x08
+#define    OSM          = 0x08
 CLKEN        = 0x04
 CLKPRE       = 0x03
 
@@ -309,6 +310,7 @@ REQOP_LISTEN = 0x60
 REQOP_LOOPBACK  =0x40
 REQOP_SLEEP  = 0x20
 REQOP_NORMAL = 0x00
+#REQOP_NORMAL = REQOP_LOOPBACK
 
 ABORT        = 0x10
 
@@ -410,16 +412,16 @@ EXIDE_RESET  = 0x00
 # #CS   PORTAbits.RA2
 
 CAN_RATE = {
-	"5KBPS"   : [0xA7, 0XBF, 0x07],
-	"10KBPS"  : [0x31, 0XA4, 0X04],
-	"20KBPS"  : [0x18, 0XA4, 0x04],
-	"50KBPS"  : [0x09, 0XA4, 0x04],
-	"100KBPS" : [0x04, 0x9E, 0x03],
-	"125KBPS" : [0x03, 0x9E, 0x03],
-	"250KBPS" : [0x01, 0x1E, 0x03],
-	"500KBPS" : [0x00, 0x9E, 0x03],
-	"800KBPS" : [0x00, 0x92, 0x02],
-	"1000KBPS": [0x00, 0x82, 0x02],
+    "5KBPS"   : [0xA7, 0XBF, 0x07],
+    "10KBPS"  : [0x31, 0XA4, 0X04],
+    "20KBPS"  : [0x18, 0XA4, 0x04],
+    "50KBPS"  : [0x09, 0XA4, 0x04],
+    "100KBPS" : [0x04, 0x9E, 0x03],
+    "125KBPS" : [0x03, 0x9E, 0x03],
+    "250KBPS" : [0x01, 0x1E, 0x03],
+    "500KBPS" : [0x00, 0x9E, 0x03],
+    "800KBPS" : [0x00, 0x92, 0x02],
+    "1000KBPS": [0x00, 0x82, 0x02],
 }
 
 gRXFlag=0
@@ -434,131 +436,137 @@ SPI0_CS0 = 5
 # debug = False
 debug = True
 class MCP2515():
-	def __init__(self):
-		self.spi = SPI(0)
-		self.spi = SPI(0,10000_000,polarity=0, phase=0,sck=Pin(6),mosi=Pin(7),miso=Pin(4))
-		self.cs = Pin(SPI0_CS0,Pin.OUT)
+    def __init__(self):
+        self.spi = SPI(0)
+        self.spi = SPI(0,10000_000,polarity=0, phase=0,sck=Pin(6),mosi=Pin(7),miso=Pin(4))
+        self.cs = Pin(SPI0_CS0,Pin.OUT)
         
-	def ReadByte(self, addr):
-		self.cs(0)
-		self.spi.write(bytearray([CAN_READ]))
-		self.spi.write(bytearray([addr]))
-		res = self.spi.read(1)
-		self.cs(1)
-		return int.from_bytes(res,'big')
-	def WriteByte(self, addr):
-		self.cs(0)
-		self.spi.write(bytearray([addr]))
-		self.cs(1)
-	def WriteBytes(self, addr, data):
-		self.cs(0)
-		self.spi.write(bytearray([CAN_WRITE]))
-		self.spi.write(bytearray([addr]))
-		self.spi.write(bytearray([data]))
-		self.cs(1)
-	def Reset(self):
-		self.cs(0)
-		self.spi.write(bytearray([CAN_RESET])) #Reset 0XC0
-		self.cs(1)
-		
-	def Init(self, speed="1000KBPS"):
-		print("Reset")
-		self.Reset()
-		time.sleep(0.1)
-			
-		#set baud rate 125Kbps
-		#<7:6>SJW=00(1TQ)
-		#<5:0>BRP=0x03(TQ=[2*(BRP+1)]/Fsoc=2*4/8M=1us)
-		#<5:0>BRP=0x03 (TQ=[2*(BRP+1)]/Fsoc=2*8/16M=1us)
-		# self.WriteBytes(CNF1, 7)		
-		# self.WriteBytes(CNF2,0x80|PHSEG1_3TQ|PRSEG_1TQ)		
-		# self.WriteBytes(CNF3,PHSEG2_3TQ)
-		self.WriteBytes(CNF1, CAN_RATE[speed][0])
-		self.WriteBytes(CNF2, CAN_RATE[speed][1])
-		self.WriteBytes(CNF3, CAN_RATE[speed][2])		
+    def ReadByte(self, addr):
+        self.cs(0)
+        self.spi.write(bytearray([CAN_READ]))
+        self.spi.write(bytearray([addr]))
+        res = self.spi.read(1)
+        self.cs(1)
+        return int.from_bytes(res,'big')
+    def WriteByte(self, addr):
+        self.cs(0)
+        self.spi.write(bytearray([addr]))
+        self.cs(1)
+    def WriteBytes(self, addr, data):
+        self.cs(0)
+        self.spi.write(bytearray([CAN_WRITE]))
+        self.spi.write(bytearray([addr]))
+        self.spi.write(bytearray([data]))
+        self.cs(1)
+    def Reset(self):
+        self.cs(0)
+        self.spi.write(bytearray([CAN_RESET])) #Reset 0XC0
+        self.cs(1)
+        
+    def Init(self, speed="1000KBPS"):
+        print("Reset")
+        self.Reset()
+        time.sleep(0.1)
+            
+        #set baud rate 125Kbps
+        #<7:6>SJW=00(1TQ)
+        #<5:0>BRP=0x03(TQ=[2*(BRP+1)]/Fsoc=2*4/8M=1us)
+        #<5:0>BRP=0x03 (TQ=[2*(BRP+1)]/Fsoc=2*8/16M=1us)
+        # self.WriteBytes(CNF1, 7)        
+        # self.WriteBytes(CNF2,0x80|PHSEG1_3TQ|PRSEG_1TQ)        
+        # self.WriteBytes(CNF3,PHSEG2_3TQ)
+        self.WriteBytes(CNF1, CAN_RATE[speed][0])
+        self.WriteBytes(CNF2, CAN_RATE[speed][1])
+        self.WriteBytes(CNF3, CAN_RATE[speed][2])        
 
-		#set TXB0,TXB1
-		#<15:5> SID 11bit canid
-		#<BIT3> exide,1:extended 0:standard
-		self.WriteBytes(TXB0SIDH,0xFF)
-		self.WriteBytes(TXB0SIDL,0xE0)
-		self.WriteBytes(TXB0DLC,0x40|DLC_8)
-		# self.WriteBytes(TXB1SIDH,0x50)
-		# self.WriteBytes(TXB1SIDL,0x00)
-		# self.WriteBytes(TXB1DLC,0x40 | DLC_8)    #Set DLC = 3 bytes and RTR bit*/
+        #set TXB0,TXB1
+        #<15:5> SID 11bit canid
+        #<BIT3> exide,1:extended 0:standard
+        self.WriteBytes(TXB0SIDH,0xFF)
+        self.WriteBytes(TXB0SIDL,0xE0)
+        self.WriteBytes(TXB0DLC,0x40|DLC_8)
+        # self.WriteBytes(TXB1SIDH,0x50)
+        # self.WriteBytes(TXB1SIDL,0x00)
+        # self.WriteBytes(TXB1DLC,0x40 | DLC_8)    #Set DLC = 3 bytes and RTR bit*/
 
-		#Set RX
-		self.WriteBytes(RXB0SIDH,0x00)
-		self.WriteBytes(RXB0SIDL,0x60)
-		self.WriteBytes(RXB0CTRL,0x60)
-		self.WriteBytes(RXB0DLC, DLC_8)
+        #Set RX
+        self.WriteBytes(RXB0SIDH,0x00)
+        self.WriteBytes(RXB0SIDL,0x60)
+        self.WriteBytes(RXB0CTRL,0x60)
+        self.WriteBytes(RXB0DLC, DLC_8)
 
-		self.WriteBytes(RXF0SIDH,0xFF)
-		self.WriteBytes(RXF0SIDL,0xE0)
-		self.WriteBytes(RXM0SIDH,0xFF)
-		self.WriteBytes(RXM0SIDL,0xE0)
+        self.WriteBytes(RXF0SIDH,0xFF)
+        self.WriteBytes(RXF0SIDL,0xE0)
+        self.WriteBytes(RXM0SIDH,0xFF)
+        self.WriteBytes(RXM0SIDL,0xE0)
 
-		#can int
-		self.WriteBytes(CANINTF,0x00)#clean interrupt flag
-		self.WriteBytes(CANINTE,0x01)#Receive Buffer 0 Full Interrupt Enable Bit
+        #can int
+        self.WriteBytes(CANINTF,0x00)#clean interrupt flag
+        self.WriteBytes(CANINTE,0x01)#Receive Buffer 0 Full Interrupt Enable Bit
 
-		self.WriteBytes(CANCTRL, REQOP_NORMAL|CLKOUT_ENABLED)#
+        self.WriteBytes(CANCTRL, REQOP_NORMAL|CLKOUT_ENABLED)#
 
-		dummy=self.ReadByte(CANSTAT)
-		if( OPMODE_NORMAL != (dummy and 0xE0)):
-			self.WriteBytes(CANCTRL, REQOP_NORMAL|CLKOUT_ENABLED)#set normal mode
+        dummy=self.ReadByte(CANSTAT)
+        if( OPMODE_NORMAL != (dummy and 0xE0)):
+            self.WriteBytes(CANCTRL, REQOP_NORMAL|CLKOUT_ENABLED)#set normal mode
 
-	def Send(self, CAN_ID, CAN_TX_Buf, length1):
-		tempdata = self.ReadByte(CAN_RD_STATUS)
-		self.WriteBytes(TXB0SIDH, (CAN_ID>>3)&0XFF)
-		self.WriteBytes(TXB0SIDL, (CAN_ID&0x07)<<5)
-		
-		self.WriteBytes(TXB0EID8, 0)
-		self.WriteBytes(TXB0EID0, 0)
-		self.WriteBytes(TXB0DLC, length1)
-		for j in range(0, length1): 
-			self.WriteBytes(TXB0D0+j,CAN_TX_Buf[j])
+    def Send(self, CAN_ID, CAN_TX_Buf, length1):
+        tempdata = self.ReadByte(CAN_RD_STATUS)
+        self.WriteBytes(TXB0SIDH, (CAN_ID>>3)&0XFF)
+        self.WriteBytes(TXB0SIDL, (CAN_ID&0x07)<<5)
+        
+        self.WriteBytes(TXB0EID8, 0)
+        self.WriteBytes(TXB0EID0, 0)
+        self.WriteBytes(TXB0DLC, length1)
+        for j in range(0, length1): 
+            self.WriteBytes(TXB0D0+j,CAN_TX_Buf[j])
 
-		if(tempdata&0x04):# TXREQ
-			time.sleep(0.01)
-			self.WriteBytes(TXB0CTRL, 0)#clean flag
-			while(1):#wite 
-				if(self.ReadByte(CAN_RD_STATUS)&0x04 != 1):
-					break
-		self.WriteByte(CAN_RTS_TXB0)
+        if(tempdata&0x04):# TXREQ
+            time.sleep(0.01)
+            self.WriteBytes(TXB0CTRL, 0)#clean flag
+            while(1):#wite 
+                if(self.ReadByte(CAN_RD_STATUS)&0x04 != 1):
+                    break
+        self.WriteByte(CAN_RTS_TXB0)
 
-	
-		
+    def ReadMessage(self):
+        if self.ReadByte(CANINTF) & 0x01:
+            sidH = self.ReadByte(RXB0SIDH)
+            sidL = self.ReadByte(RXB0SIDL)
 
+            can_id = (sidH << 3) | (sidL >> 5)
+            dlc = self.ReadByte(RXB0DLC) & 0x0F
+
+            data = [0]*dlc
+            for i in range(dlc):
+                data[i] = self.ReadByte(RXB0D0+i)
+
+            self.WriteBytes(CANINTF, 0x00)
+            return  (can_id, dlc, data)
+        return None, None, None
+                
+        
 if __name__ == '__main__':
-	print("--------------------------------------------------------")
-	can = MCP2515()
-	print("init...")
-	can.Init()
-	print("send data...")
-	id = 0x123 #max 7ff
-	data = [1, 2, 3, 4, 5, 6, 7, 8]
-	dlc = 8
-	can.Send(id, data, dlc)
+    print("--------------------------------------------------------")
+    can = MCP2515()
+    print("init...")
+    can.Init()
+    print("send data...")
+    idxs = [0x470, 0x471, 0x360, 0x360, 0x361, 0x3E0, 0x470]
+    s = random.seed(42)
+    data = [0,1,2,3,4,5,6,7]
+    dlc = len(data)
 
-	readbuf = []
-	# while(1):
-	led = Pin(25, Pin.OUT)
-	led.on()
-	time.sleep(1)
-	led.off()
-	print("Why")
-	while True:
-		print("AHHH")
-		led.on()
-		can.Send(id, data, dlc)
-		time.sleep(0.5)
-		led.off()
-		time.sleep(0.5)
-		print("help")
-		
+    while True:
+        led.on()
+        for id in idxs:
+            can.Send(id, data, dlc)
+            print(f"Send id: {id}, dlc: {dlc}, data: {data}")
+            time.sleep(0.5)
+        led.off()
+        #r_id, r_dlc, r_data = can.ReadMessage()
+        #print(f"id: {r_id}, dlc: {r_dlc}, data: {r_data}")
+        time.sleep(0.5)
+        
 
-	print("--------------------------------------------------------")
-
-
-
+    print("--------------------------------------------------------")

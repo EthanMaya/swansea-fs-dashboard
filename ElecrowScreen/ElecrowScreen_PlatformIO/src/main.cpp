@@ -1,10 +1,14 @@
+#include "can_rule_engine.h"
+#include "driver/twai.h"
 #include "ui.h"
 #include "ui_code.hpp"
 #include <ESP32-TWAI-CAN.hpp>
 #include <lvgl.h>
 
-#define CAN_TX 44
-#define CAN_RX 43
+// #define CAN_TX 44
+// #define CAN_RX 43
+#define CAN_TX 5
+#define CAN_RX 4
 #define SPEED 1000
 #define HAS_DISPLAY 0
 // #define P 43
@@ -12,48 +16,33 @@
 // doesn't 19
 typedef u_int8_t u8;
 typedef u_int16_t u16;
-CanFrame rxFrame;
+
+void handle_rpm(const CanFrame &rxFrame);
+void handle_throttle(const CanFrame &rxFrame);
+void handle_oil_pressure(const CanFrame &rxFrame);
+void handle_oil_temp(const CanFrame &rxFrame);
+void handle_gear_selection(const CanFrame &rxFrame);
+void handle_accelerator_pedal(const CanFrame &rxFrame);
+
+class CompareIdentifier {
+  u16 identifier;
+
+public:
+  CompareIdentifier(u16 identifier) : identifier(identifier){};
+  bool operator()(const CanFrame &rxFrame) {
+    return rxFrame.identifier == identifier;
+  }
+};
 
 #if (HAS_DISPLAY)
-lv_obj_t **e_Throttle_Bar = &ui_Bar2;
-lv_obj_t **e_Throttle_Num = &ui_Label7;
-lv_obj_t **e_Gear_Position = &ui_Label8;
-lv_obj_t **e_Temperature = &ui_Label5;
-lv_obj_t **e_Pressure = &ui_Label6;
-int y = 0;
+// Define lvgl vars here
+;
 #endif
 
-u16 throttle = 0;
-u8 temperature = 0;
-u8 pressure = 0;
-char gear = -1;
-u8 temp = 0;
+//
 char buf[16];
-
-void handle_gear_selection(const CanFrame &rxFrame) {
-  gear = rxFrame.data[7];
-  lv_snprintf(buf, sizeof(buf), "%d", gear);
-#if (HAS_DISPLAY)
-  lv_label_set_text(*e_Gear_Position, buf);
-#else
-  Serial.print("Gear: ");
-  Serial.println(buf);
-#endif
-}
-
-void handle_accelerator_pedal(const CanFrame &rxFrame) {
-  u16 bit0 = rxFrame.data[2];
-  u16 bit1 = rxFrame.data[3];
-  throttle = ((bit0 << 8) | bit1) / 10.0;
-  lv_snprintf(buf, sizeof(buf), "%d", throttle);
-#if (HAS_DISPLAY)
-  lv_label_set_text(*e_Throttle_Num, buf);
-  lv_bar_set_value(*e_Throttle_Bar, throttle, LV_ANIM_OFF);
-#else
-  Serial.print("Throttle: ");
-  Serial.println(buf);
-#endif
-}
+CanFrame rxFrame;
+RuleEngine<CanFrame> rule_engine;
 
 void setup() {
   Serial.begin(9600);
@@ -66,184 +55,109 @@ void setup() {
     Serial.println("CAN bus failed!");
   }
 
+  rule_engine.add_rule(CompareIdentifier(0x360), &handle_rpm);
+  rule_engine.add_rule(CompareIdentifier(0x360), &handle_throttle);
+  rule_engine.add_rule(CompareIdentifier(0x361), &handle_oil_pressure);
+  rule_engine.add_rule(CompareIdentifier(0x3E0), &handle_oil_temp);
+  rule_engine.add_rule(CompareIdentifier(0x470), &handle_gear_selection);
+  rule_engine.add_rule(CompareIdentifier(0x471), &handle_accelerator_pedal);
+
 #if (HAS_DISPLAY)
   init_screen();
 #endif
 }
 
-void loop() { // while
-              // 0x360 rpm 0-1
-              // 0x360 throttle 4-5
-              // 0x361 oil press 0-1
-              // 0x3E0 6-7 oil temp
-              // 0x470 6 gear selector position
-
-  boolean nothingToOutput = true;
-  while (nothingToOutput) {
-    Serial.println("No output");
-    if (ESP32Can.readFrame(rxFrame, 1000)) {
-      if (rxFrame.identifier == 0x470) { // gear sel check
-        gear = rxFrame.data[7];
-        nothingToOutput = false;
-      }
-      if (rxFrame.identifier == 0x471) { // apps
-        u16 bit0 = rxFrame.data[2];
-        u16 bit1 = rxFrame.data[3];
-        throttle = ((bit0 << 8) | bit1) / 10.0;
-        nothingToOutput = false;
-      }
-    }
+void loop() {
+  if (ESP32Can.readFrame(rxFrame, 1000)) {
+    Serial.println("In loop");
+    rule_engine.run(rxFrame);
   }
+}
 
+void handle_rpm(const CanFrame &rxFrame) {
+  // 0x360; bits 0-1 RPM; y = x
+  u16 bit0 = rxFrame.data[0];
+  u16 bit1 = rxFrame.data[1];
+  u16 rpm_val = ((bit0 << 8) | bit1);
+  lv_snprintf(buf, sizeof(buf), "%d", rpm_val);
 #if (HAS_DISPLAY)
-  char buf[16];
-  lv_snprintf(buf, sizeof(buf), "%d", throttle);
-  lv_label_set_text(*e_Throttle_Num, buf);
-  lv_bar_set_value(*e_Throttle_Bar, throttle, LV_ANIM_OFF);
-  lv_snprintf(buf, sizeof(buf), "%d", temperature);
-  lv_label_set_text(*e_Temperature, buf);
-  lv_snprintf(buf, sizeof(buf), "%d", gear);
-  lv_label_set_text(*e_Gear_Position, buf);
-
-  lv_snprintf(buf, sizeof(buf), "%d", pressure);
-  lv_label_set_text(*e_Pressure, buf);
-
-  // temp++;//check engine light, battery voltage, oil temp press light, shift
-  // light/lights, vehicle speed, rpm
-  /*if batt voltage below amount blink, oil pres, shift lights
-  most important
-  rpm,
-  */
-
-  lv_timer_handler(); /* let the GUI do its work */
-  delay(10);
+  // Update display
+  ;
+#else
+  Serial.print("RPM: ");
+  Serial.println(buf);
 #endif
 }
 
-// #include "ui.h"
-// #include "ui_code.hpp"
-// #include <ESP32-TWAI-CAN.hpp>
+void handle_throttle(const CanFrame &rxFrame) {
+  // 0x360; bits 4-5 Throttle Position; y = x/10
+  u16 bit0 = rxFrame.data[4];
+  u16 bit1 = rxFrame.data[5];
+  u16 throttle_val = ((bit0 << 8) | bit1) / 10.0;
+  lv_snprintf(buf, sizeof(buf), "%d", throttle_val);
+#if (HAS_DISPLAY)
+  // Update display
+  ;
+#else
+  Serial.print("Throttle: ");
+  Serial.println(buf);
+#endif
+}
+void handle_oil_pressure(const CanFrame &rxFrame) {
+  // 0x361; bits 2-3 Oil Pressure; y = x/10 - 101.3
+  u16 bit0 = rxFrame.data[2];
+  u16 bit1 = rxFrame.data[3];
+  u16 oil_p_val = ((bit0 << 8) | bit1) / 10.0 - 101.3;
+  lv_snprintf(buf, sizeof(buf), "%d", oil_p_val);
+#if (HAS_DISPLAY)
+  // Update display
+  ;
+#else
+  Serial.print("Oil Pressure: ");
+  Serial.println(buf);
+#endif
+}
 
-// #define CAN_TX 5
-// #define CAN_RX 4
-// #define SPEED 1000
-// #define HAS_DISPLAY 1
-// typedef u_int8_t u8;
+void handle_oil_temp(const CanFrame &rxFrame) {
+  // 0x3E0; bits 6-7; Oil temperature; y = x/10
+  u16 bit0 = rxFrame.data[6];
+  u16 bit1 = rxFrame.data[7];
+  u16 oil_temp_val = ((bit0 << 8) | bit1) / 10.0;
+  lv_snprintf(buf, sizeof(buf), "%d", oil_temp_val);
+#if (HAS_DISPLAY)
+  // Update display
+  ;
+#else
+  Serial.print("Oil Temp: ");
+  Serial.println(buf);
+#endif
+}
 
-// CanFrame rxFrame;
+void handle_gear_selection(const CanFrame &rxFrame) {
+  // 0x470; bits 7; gear position; enum val ??
+  u16 gear_val = rxFrame.data[7];
+  lv_snprintf(buf, sizeof(buf), "%d", gear_val);
+#if (HAS_DISPLAY)
+  // Update display
+  ;
+#else
+  Serial.print("Gear: ");
+  Serial.println(buf);
+#endif
+}
 
-// void setup() {
-//   Serial.begin(9600);
-// #if (HAS_DISPLAY)
-//   init_screen();
-// #endif
-//   auto SUCCESS =
-//       ESP32Can.begin(ESP32Can.convertSpeed(SPEED), CAN_TX, CAN_RX, 10, 10);
+void handle_accelerator_pedal(const CanFrame &rxFrame) {
+  // 0x471; bits 2-3 Accelerator pedal positon; y = x/10
+  u16 bit0 = rxFrame.data[2];
+  u16 bit1 = rxFrame.data[3];
+  u16 accel_val = ((bit0 << 8) | bit1) / 10.0; // Merge bits
+  lv_snprintf(buf, sizeof(buf), "%d", accel_val);
+#if (HAS_DISPLAY)
+  // Update display
+  ;
+#else
+  Serial.print("Accel Pedal: ");
+  Serial.println(buf);
+#endif
+}
 
-//   if (SUCCESS) {
-//     Serial.println("CAN bus started!");
-//   } else {
-//     Serial.println("CAN bus failed!");
-//   }
-// }
-
-// #if (HAS_DISPLAY)
-// lv_obj_t **e_Throttle_Bar = &ui_Bar2;
-// lv_obj_t **e_Throttle_Num = &ui_Label7;
-// lv_obj_t **e_Gear_Position = &ui_Label8;
-// lv_obj_t **e_Temperature = &ui_Label5;
-// lv_obj_t **e_Pressure = &ui_Label6;
-// int y = 0;
-// #endif
-
-// u8 throttle = 0;
-// u8 temperature = 0;
-// u8 pressure = 0;
-// u8 gear = -1;
-
-// void loop() {
-
-//   if (ESP32Can.readFrame(rxFrame, 1000)) {
-//     throttle = rxFrame.data[0];
-//     temperature = rxFrame.data[1];
-//     gear = rxFrame.data[2];
-//     pressure = rxFrame.data[3];
-
-//     Serial.printf("Throttle %d \r\n", throttle);
-//     Serial.printf("Temperature %d \r\n", temperature);
-//     Serial.printf("Gear %d \r\n", gear);
-//     Serial.printf("Pressure %d \r\n\n", pressure);
-//   }
-
-// #if (HAS_DISPLAY)
-//   char buf[16];
-//   if (y >= 100) {
-//     lv_snprintf(buf, sizeof(buf), "%d", throttle);
-//     lv_label_set_text(*e_Throttle_Num, buf);
-//     lv_bar_set_value(*e_Throttle_Bar, throttle, LV_ANIM_OFF);
-//     throttle++;
-//     y = -1;
-//   }
-//   y++;
-//   lv_timer_handler(); /* let the GUI do its work */
-// #endif
-// }
-
-// if(false) {
-//           // if (rxFrame.identifier == 0x471) { //Accelerator Pedal Position
-//           //   u16 bit0 = rxFrame.data[2];
-//           //   u16 bit1 = rxFrame.data[3];
-//           //   temperature = (bit0 << 8) | bit1;
-//           //   //temperature /= 10;
-//           //   nothingToOutput = false;
-//           // }
-//           if (rxFrame.identifier == 0x360) { //Shoud be Throttle Position is
-//           Gear position
-//             u8 temp = rxFrame.data[5];
-//             temp -= 964;
-//             if (temp <5) {
-//               gear = 'N';
-//             } else if (temp < 10) {
-//               gear = 1;
-//             } else if (temp < 15) {
-//               gear = 2;
-//             } else if (temp < 20) {
-//               gear = 3;
-//             } else if (temp < 25) {
-//               gear = 4;
-//             } else {
-//               gear = 5;
-//             }
-//             nothingToOutput = false;
-//         }//apps
-//         //gear selector position
-//         } else if (false) {
-//           if (rxFrame.identifier == 0x360) { //rpm
-//             u16 bit0 = rxFrame.data[0];
-//             u16 bit1 = rxFrame.data[1];
-//             throttle = (bit0 << 8) | bit1;
-//             nothingToOutput = false;
-//           }
-
-//           if (rxFrame.identifier == 0x361) { //oil press
-//             pressure = rxFrame.data[1];
-//             pressure = pressure;
-
-//             nothingToOutput = false;
-//           }
-//           if (rxFrame.identifier == 0x3E0) {//oil temp
-//             gear = rxFrame.data[2];
-//             nothingToOutput = false;
-
-//           }
-//           if (rxFrame.identifier == 0x470) { //gear sel
-//             pressure = rxFrame.data[6];
-//             nothingToOutput = false;
-//           }
-//       } else{
-
-// Serial.printf("ID: %d", rxFrame.identifier);
-//         Serial.printf("Throttle %d \r\n", throttle);
-//         Serial.printf("Temperature %d \r\n", temperature);
-//         Serial.printf("Gear %d \r\n", gear);
-//         Serial.printf("Pressure %d \r\n\n", pressure);
