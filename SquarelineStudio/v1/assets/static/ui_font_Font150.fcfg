@@ -1,0 +1,16 @@
+{
+  "codename": "Font150",
+  "ttf_path": "/assets/static/Roboto-Black.ttf",
+  "bin_path": "/assets/static/ui_font_Font150.bin",
+  "c_path": "/assets/static/ui_font_Font150.c",
+  "cfg_path": "/assets/static/ui_font_Font150.fcfg",
+  "size": 150,
+  "bpp": 1,
+  "letters": 0,
+  "ranges": [
+    "0x20-0x7f"
+  ],
+  "symbols": "",
+  "customparams": "--no-compress --no-prefilter",
+  "uploaded": false
+}

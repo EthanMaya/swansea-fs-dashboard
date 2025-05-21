@@ -1,0 +1,16 @@
+{
+  "codename": "Font250",
+  "ttf_path": "/assets/static/Roboto-Black.ttf",
+  "bin_path": "/assets/static/ui_font_Font250.bin",
+  "c_path": "/assets/static/ui_font_Font250.c",
+  "cfg_path": "/assets/static/ui_font_Font250.fcfg",
+  "size": 250,
+  "bpp": 1,
+  "letters": 0,
+  "ranges": [
+    "0x20-0x7f"
+  ],
+  "symbols": "",
+  "customparams": "--no-compress --no-prefilter",
+  "uploaded": false
+}
