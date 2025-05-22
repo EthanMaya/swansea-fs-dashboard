@@ -3,7 +3,6 @@
 
 from machine import Pin,SPI,PWM
 import time
-import random
 
 led = Pin(25, Pin.OUT)
 ## Configuration Registers */
@@ -21,47 +20,47 @@ EFLG         = 0x2D
 TXRTSCTRL    = 0x0D
 
 ##  Recieve Filters */
-RXF0SIDH     = 0x00
-RXF0SIDL     = 0x01
-RXF0EID8     = 0x02
-RXF0EID0     = 0x03
-RXF1SIDH     = 0x04
-RXF1SIDL     = 0x05
-RXF1EID8     = 0x06
-RXF1EID0     = 0x07
-RXF2SIDH     = 0x08
-RXF2SIDL     = 0x09
-RXF2EID8     = 0x0A
-RXF2EID0     = 0x0B
-RXF3SIDH     = 0x10
-RXF3SIDL     = 0x11
-RXF3EID8     = 0x12
-RXF3EID0     = 0x13
-RXF4SIDH     = 0x14
-RXF4SIDL     = 0x15
-RXF4EID8     = 0x16
-RXF4EID0     = 0x17
-RXF5SIDH     = 0x18
-RXF5SIDL     = 0x19
-RXF5EID8     = 0x1A
-RXF5EID0     = 0x1B
+RXF0SgearH     = 0x00
+RXF0SgearL     = 0x01
+RXF0Egear8     = 0x02
+RXF0Egear0     = 0x03
+RXF1SgearH     = 0x04
+RXF1SgearL     = 0x05
+RXF1Egear8     = 0x06
+RXF1Egear0     = 0x07
+RXF2SgearH     = 0x08
+RXF2SgearL     = 0x09
+RXF2Egear8     = 0x0A
+RXF2Egear0     = 0x0B
+RXF3SgearH     = 0x10
+RXF3SgearL     = 0x11
+RXF3Egear8     = 0x12
+RXF3Egear0     = 0x13
+RXF4SgearH     = 0x14
+RXF4SgearL     = 0x15
+RXF4Egear8     = 0x16
+RXF4Egear0     = 0x17
+RXF5SgearH     = 0x18
+RXF5SgearL     = 0x19
+RXF5Egear8     = 0x1A
+RXF5Egear0     = 0x1B
 
 ## Receive Masks */
-RXM0SIDH     = 0x20
-RXM0SIDL     = 0x21
-RXM0EID8     = 0x22
-RXM0EID0     = 0x23
-RXM1SIDH     = 0x24
-RXM1SIDL     = 0x25
-RXM1EID8     = 0x26
-RXM1EID0     = 0x27
+RXM0SgearH     = 0x20
+RXM0SgearL     = 0x21
+RXM0Egear8     = 0x22
+RXM0Egear0     = 0x23
+RXM1SgearH     = 0x24
+RXM1SgearL     = 0x25
+RXM1Egear8     = 0x26
+RXM1Egear0     = 0x27
 
 ## Tx Buffer 0 */
 TXB0CTRL     = 0x30
-TXB0SIDH     = 0x31
-TXB0SIDL     = 0x32
-TXB0EID8     = 0x33
-TXB0EID0     = 0x34
+TXB0SgearH     = 0x31
+TXB0SgearL     = 0x32
+TXB0Egear8     = 0x33
+TXB0Egear0     = 0x34
 TXB0DLC      = 0x35
 TXB0D0       = 0x36
 TXB0D1       = 0x37
@@ -74,10 +73,10 @@ TXB0D7       = 0x3D
 
 ## Tx Buffer 1 */
 TXB1CTRL     = 0x40
-TXB1SIDH     = 0x41
-TXB1SIDL     = 0x42
-TXB1EID8     = 0x43
-TXB1EID0     = 0x44
+TXB1SgearH     = 0x41
+TXB1SgearL     = 0x42
+TXB1Egear8     = 0x43
+TXB1Egear0     = 0x44
 TXB1DLC      = 0x45
 TXB1D0       = 0x46
 TXB1D1       = 0x47
@@ -90,10 +89,10 @@ TXB1D7       = 0x4D
 
 ## Tx Buffer 2 */
 TXB2CTRL     = 0x50
-TXB2SIDH     = 0x51
-TXB2SIDL     = 0x52
-TXB2EID8     = 0x53
-TXB2EID0     = 0x54
+TXB2SgearH     = 0x51
+TXB2SgearL     = 0x52
+TXB2Egear8     = 0x53
+TXB2Egear0     = 0x54
 TXB2DLC      = 0x55
 TXB2D0       = 0x56
 TXB2D1       = 0x57
@@ -106,10 +105,10 @@ TXB2D7       = 0x5D
 
 # ## Rx Buffer 0 */
 RXB0CTRL     = 0x60
-RXB0SIDH     = 0x61
-RXB0SIDL     = 0x62
-RXB0EID8     = 0x63
-RXB0EID0     = 0x64
+RXB0SgearH     = 0x61
+RXB0SgearL     = 0x62
+RXB0Egear8     = 0x63
+RXB0Egear0     = 0x64
 RXB0DLC      = 0x65
 RXB0D0       = 0x66
 RXB0D1       = 0x67
@@ -122,10 +121,10 @@ RXB0D7       = 0x6D
 
 # ## Rx Buffer 1 */
 RXB1CTRL     = 0x70
-RXB1SIDH     = 0x71
-RXB1SIDL     = 0x72
-RXB1EID8     = 0x73
-RXB1EID0     = 0x74
+RXB1SgearH     = 0x71
+RXB1SgearL     = 0x72
+RXB1Egear8     = 0x73
+RXB1Egear0     = 0x74
 RXB1DLC      = 0x75
 RXB1D0       = 0x76
 RXB1D1       = 0x77
@@ -152,7 +151,7 @@ BUKT         = 0x04
 # ## CANCTRL */
 REQOP        = 0xE0
 ABAT         = 0x10
-#define    OSM          = 0x08
+#define	OSM          = 0x08
 CLKEN        = 0x04
 CLKPRE       = 0x03
 
@@ -310,7 +309,6 @@ REQOP_LISTEN = 0x60
 REQOP_LOOPBACK  =0x40
 REQOP_SLEEP  = 0x20
 REQOP_NORMAL = 0x00
-#REQOP_NORMAL = REQOP_LOOPBACK
 
 ABORT        = 0x10
 
@@ -333,9 +331,9 @@ OPMODE_NORMAL= 0x00
 
 # ## RXBnCTRL */
 RXM_RCV_ALL  = 0x60
-RXM_VALID_EXT= 0x40
-RXM_VALID_STD= 0x20
-RXM_VALID_ALL= 0x00
+RXM_VALgear_EXT= 0x40
+RXM_VALgear_STD= 0x20
+RXM_VALgear_ALL= 0x00
 
 RXRTR_REMOTE = 0x08
 RXRTR_NO_REMOTE =0x00
@@ -407,8 +405,8 @@ TXB1         = 0x41
 TXB2         = 0x51
 RXB0         = 0x61
 RXB1         = 0x71
-EXIDE_SET    = 0x08
-EXIDE_RESET  = 0x00
+EXgearE_SET    = 0x08
+EXgearE_RESET  = 0x00
 # #CS   PORTAbits.RA2
 
 CAN_RATE = {
@@ -424,149 +422,183 @@ CAN_RATE = {
     "1000KBPS": [0x00, 0x82, 0x02],
 }
 
-gRXFlag=0
-sRXFlag=0
-yRXFlag=0
-Com_RecBuff = [0, 0, 0, 0, 0, 0, 0, 0] #8
-# data = 0
+gRXFlag = 0
+sRXFlag = 0
+yRXFlag = 0
+Com_RecBuff = [0, 0, 0, 0, 0, 0, 0, 0]  # 8
 
 SPI0_CS1 = 1
 SPI0_CS0 = 5
 
-# debug = False
 debug = True
+
 class MCP2515():
     def __init__(self):
         self.spi = SPI(0)
-        self.spi = SPI(0,10000_000,polarity=0, phase=0,sck=Pin(6),mosi=Pin(7),miso=Pin(4))
-        self.cs = Pin(SPI0_CS0,Pin.OUT)
-        
+        self.spi = SPI(0, 10000_000, polarity=0, phase=0, sck=Pin(6), mosi=Pin(7), miso=Pin(4))
+        self.cs = Pin(SPI0_CS0, Pin.OUT)
+
     def ReadByte(self, addr):
         self.cs(0)
         self.spi.write(bytearray([CAN_READ]))
         self.spi.write(bytearray([addr]))
         res = self.spi.read(1)
         self.cs(1)
-        return int.from_bytes(res,'big')
+        return int.from_bytes(res, 'big')
+
     def WriteByte(self, addr):
         self.cs(0)
         self.spi.write(bytearray([addr]))
         self.cs(1)
+
     def WriteBytes(self, addr, data):
         self.cs(0)
         self.spi.write(bytearray([CAN_WRITE]))
         self.spi.write(bytearray([addr]))
         self.spi.write(bytearray([data]))
         self.cs(1)
+
     def Reset(self):
         self.cs(0)
-        self.spi.write(bytearray([CAN_RESET])) #Reset 0XC0
+        self.spi.write(bytearray([CAN_RESET]))  # Reset 0xC0
         self.cs(1)
-        
+
     def Init(self, speed="1000KBPS"):
         print("Reset")
         self.Reset()
         time.sleep(0.1)
-            
-        #set baud rate 125Kbps
-        #<7:6>SJW=00(1TQ)
-        #<5:0>BRP=0x03(TQ=[2*(BRP+1)]/Fsoc=2*4/8M=1us)
-        #<5:0>BRP=0x03 (TQ=[2*(BRP+1)]/Fsoc=2*8/16M=1us)
-        # self.WriteBytes(CNF1, 7)        
-        # self.WriteBytes(CNF2,0x80|PHSEG1_3TQ|PRSEG_1TQ)        
-        # self.WriteBytes(CNF3,PHSEG2_3TQ)
+
         self.WriteBytes(CNF1, CAN_RATE[speed][0])
         self.WriteBytes(CNF2, CAN_RATE[speed][1])
-        self.WriteBytes(CNF3, CAN_RATE[speed][2])        
+        self.WriteBytes(CNF3, CAN_RATE[speed][2])
 
-        #set TXB0,TXB1
-        #<15:5> SID 11bit canid
-        #<BIT3> exide,1:extended 0:standard
-        self.WriteBytes(TXB0SIDH,0xFF)
-        self.WriteBytes(TXB0SIDL,0xE0)
-        self.WriteBytes(TXB0DLC,0x40|DLC_8)
-        # self.WriteBytes(TXB1SIDH,0x50)
-        # self.WriteBytes(TXB1SIDL,0x00)
-        # self.WriteBytes(TXB1DLC,0x40 | DLC_8)    #Set DLC = 3 bytes and RTR bit*/
+        self.WriteBytes(TXB0SgearH, 0xFF)
+        self.WriteBytes(TXB0SgearL, 0xE0)
+        self.WriteBytes(TXB0DLC, 0x40 | DLC_8)
 
-        #Set RX
-        self.WriteBytes(RXB0SIDH,0x00)
-        self.WriteBytes(RXB0SIDL,0x60)
-        self.WriteBytes(RXB0CTRL,0x60)
+        self.WriteBytes(RXB0SgearH, 0x00)
+        self.WriteBytes(RXB0SgearL, 0x60)
+        self.WriteBytes(RXB0CTRL, 0x60)
         self.WriteBytes(RXB0DLC, DLC_8)
 
-        self.WriteBytes(RXF0SIDH,0xFF)
-        self.WriteBytes(RXF0SIDL,0xE0)
-        self.WriteBytes(RXM0SIDH,0xFF)
-        self.WriteBytes(RXM0SIDL,0xE0)
+        self.WriteBytes(RXF0SgearH, 0xFF)
+        self.WriteBytes(RXF0SgearL, 0xE0)
+        self.WriteBytes(RXM0SgearH, 0xFF)
+        self.WriteBytes(RXM0SgearL, 0xE0)
 
-        #can int
-        self.WriteBytes(CANINTF,0x00)#clean interrupt flag
-        self.WriteBytes(CANINTE,0x01)#Receive Buffer 0 Full Interrupt Enable Bit
+        self.WriteBytes(CANINTF, 0x00)
+        self.WriteBytes(CANINTE, 0x01)
 
-        self.WriteBytes(CANCTRL, REQOP_NORMAL|CLKOUT_ENABLED)#
+        self.WriteBytes(CANCTRL, REQOP_NORMAL | CLKOUT_ENABLED)
 
-        dummy=self.ReadByte(CANSTAT)
-        if( OPMODE_NORMAL != (dummy and 0xE0)):
-            self.WriteBytes(CANCTRL, REQOP_NORMAL|CLKOUT_ENABLED)#set normal mode
+        dummy = self.ReadByte(CANSTAT)
+        if (OPMODE_NORMAL != (dummy and 0xE0)):
+            self.WriteBytes(CANCTRL, REQOP_NORMAL | CLKOUT_ENABLED)
 
-    def Send(self, CAN_ID, CAN_TX_Buf, length1):
+    def Send(self, CAN_gear, CAN_TX_Buf, length1):
         tempdata = self.ReadByte(CAN_RD_STATUS)
-        self.WriteBytes(TXB0SIDH, (CAN_ID>>3)&0XFF)
-        self.WriteBytes(TXB0SIDL, (CAN_ID&0x07)<<5)
-        
-        self.WriteBytes(TXB0EID8, 0)
-        self.WriteBytes(TXB0EID0, 0)
-        self.WriteBytes(TXB0DLC, length1)
-        for j in range(0, length1): 
-            self.WriteBytes(TXB0D0+j,CAN_TX_Buf[j])
+        self.WriteBytes(TXB0SgearH, (CAN_gear >> 3) & 0xFF)
+        self.WriteBytes(TXB0SgearL, (CAN_gear & 0x07) << 5)
 
-        if(tempdata&0x04):# TXREQ
+        self.WriteBytes(TXB0Egear8, 0)
+        self.WriteBytes(TXB0Egear0, 0)
+        self.WriteBytes(TXB0DLC, length1)
+
+        for j in range(length1):
+            self.WriteBytes(TXB0D0 + j, CAN_TX_Buf[j])
+
+        if (tempdata & 0x04):  # TXREQ
             time.sleep(0.01)
-            self.WriteBytes(TXB0CTRL, 0)#clean flag
-            while(1):#wite 
-                if(self.ReadByte(CAN_RD_STATUS)&0x04 != 1):
+            self.WriteBytes(TXB0CTRL, 0)
+            while True:
+                if (self.ReadByte(CAN_RD_STATUS) & 0x04 != 1):
                     break
         self.WriteByte(CAN_RTS_TXB0)
 
-    def ReadMessage(self):
-        if self.ReadByte(CANINTF) & 0x01:
-            sidH = self.ReadByte(RXB0SIDH)
-            sidL = self.ReadByte(RXB0SIDL)
 
-            can_id = (sidH << 3) | (sidL >> 5)
-            dlc = self.ReadByte(RXB0DLC) & 0x0F
-
-            data = [0]*dlc
-            for i in range(dlc):
-                data[i] = self.ReadByte(RXB0D0+i)
-
-            self.WriteBytes(CANINTF, 0x00)
-            return  (can_id, dlc, data)
-        return None, None, None
-                
-        
 if __name__ == '__main__':
     print("--------------------------------------------------------")
     can = MCP2515()
     print("init...")
     can.Init()
     print("send data...")
-    idxs = [0x470, 0x471, 0x360, 0x360, 0x361, 0x3E0, 0x470]
-    s = random.seed(42)
-    data = [0,1,2,3,4,5,6,7]
-    dlc = len(data)
 
+    speed = 0x370
+    rpm = 0x360
+    voltage = 0x372
+    pressure = 0x361
+    temperature = 0x3E0
+    gear = 0x470
+    enginelight = 0x3E4
+    enginedata = [1, 2, 3, 4, 5, 6, 7, 0b10000000]
+    data = [1, 2, 3, 4, 5, 6, 7, 8]
+    dlc = 8
+    
+    rpmdata = [0, 0, 3, 4, 5, 6, 7, 8]
+    rpm_value = 0
+    
+    
+    speeddata = [0, 0, 9, 9, 9, 9, 9, 9]
+    temppressdata = [0, 0, 9, 9, 9, 9]
+    
+    speed_value = 0
+    temppress = 150
+
+    can.Send(gear, data, dlc)
+
+    readbuf = []
+
+    led = Pin(25, Pin.OUT)
+    led.on()
+    time.sleep(1)
+    led.off()
+
+    i = 0
+    flashing = False
     while True:
+        #print("AHHH")
         led.on()
-        for id in idxs:
-            can.Send(id, data, dlc)
-            print(f"Send id: {id}, dlc: {dlc}, data: {data}")
-            time.sleep(0.5)
-        led.off()
-        #r_id, r_dlc, r_data = can.ReadMessage()
-        #print(f"id: {r_id}, dlc: {r_dlc}, data: {r_data}")
-        time.sleep(0.5)
+        #can.Send(gear, data, dlc)
+        rpm_value = (rpm_value + 1) % 900
+        rpmdata[0] = (rpm_value >> 8) & 0xFF  
+        rpmdata[1] = rpm_value & 0xFF
+        can.Send(rpm, rpmdata, dlc)
         
+        speed_value = (speed_value + 5) % 3550
+        speeddata[0] = (speed_value >> 8) & 0xFF  
+        speeddata[1] = speed_value & 0xFF
+        speeddata[2] = (speed_value >> 8) & 0xFF  
+        speeddata[3] = speed_value & 0xFF
+        speeddata[6] = (speed_value >> 8) & 0xFF  
+        speeddata[7] = speed_value & 0xFF
+        print(str(speeddata[0]) + "" + str(speeddata[1]))
+        can.Send(speed, speeddata, dlc)
+        can.Send(voltage, speeddata, dlc)
+        #temppress = (temppress + 5) % 1200 + 150
+        #temppressdata[0] = (temppress >> 8) & 0xFF  
+        #temppressdata[1] = temppress & 0xFF
+        #temppressdata[6] = (temppress >> 8) & 0xFF  
+        #temppressdata[7] = temppress & 0xFF
+        can.Send(pressure, speeddata, dlc)
+        can.Send(temperature, speeddata, dlc)
+        i += 1
+        if i >= 100:
+            i = 0
+            flashing = not flashing 
+        if flashing:
+            print("flashing")
+            enginedata[7] = 0b10000000
+            enginedata[6] = 3 
+            can.Send(enginelight, enginedata, dlc)
+            can.Send(gear, enginedata, dlc)
+        else:
+            print("working")
+            enginedata[7] = 0b01111111
+            enginedata[6] = 5
+            can.Send(enginelight, enginedata, dlc)
+            can.Send(gear, enginedata, dlc)
+        led.off()
+        time.sleep(0.01)
+        #print("help")
 
     print("--------------------------------------------------------")
