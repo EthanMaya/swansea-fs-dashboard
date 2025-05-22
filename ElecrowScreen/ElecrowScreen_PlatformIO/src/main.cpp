@@ -1,4 +1,5 @@
-#include "can_rule_engine.h"
+#include "can_rule_engine.hpp"
+#include "can_rules.hpp"
 #include "driver/twai.h"
 #include "ui.h"
 #include "ui_code.hpp"
@@ -17,15 +18,6 @@
 typedef u_int8_t u8;
 typedef u_int16_t u16;
 
-void handle_speed(const CanFrame &rxFrame);
-void handle_rpm(const CanFrame &rxFrame);
-void handle_engine_voltage(const CanFrame &rxFrame);
-void handle_oil_pressure(const CanFrame &rxFrame);
-void handle_oil_temp(const CanFrame &rxFrame);
-void handle_gear_selection(const CanFrame &rxFrame);
-void handle_engine_light(const CanFrame &rxFrame);
-void display_update();
-
 class CompareIdentifier {
   u16 identifier;
 
@@ -36,21 +28,8 @@ public:
   }
 };
 
-#if (HAS_DISPLAY)
-// Define lvgl vars here
-;
-#endif
-
-//
 CanFrame rxFrame;
 RuleEngine<CanFrame> rule_engine;
-// ui_erpm            RPM   0x360 0-1 rpm y = x
-// ui_evoltage        V     0x372 0-1 battery voltage Volts y = x/10
-// ui_eoilpressure    P     0x361 0-1 oil pressure kPa y = x/10 - 101.3
-// ui_eoiltemperature T     0x3E0 6-7 oil temp     K   y = x/10
-// ui_egear           Gear  0x470 6 gear selector position enum
-// ui_eengine         E     0x3E4 7:7 check engine light boolean 0=off, 1=on
-// ui_espeed          Speed 0x370 0-1 vehicle speed km/h y = x/10
 
 void setup() {
   Serial.begin(9600);
@@ -87,76 +66,4 @@ void loop() {
     lv_timer_handler();
     delay(10);
   }
-}
-
-void handle_speed(const CanFrame &rxFrame) {
-  //  0x370; bits 0-1 vehicle speed km/h y = x/10
-  u16 bit0 = rxFrame.data[0];
-  u16 bit1 = rxFrame.data[1];
-  u16 speed_val = ((bit0 << 8) | bit1) / 10;
-#if (HAS_DISPLAY)
-  update_speed_ui(speed_val);
-#else
-#endif
-}
-
-void handle_rpm(const CanFrame &rxFrame) {
-  // 0x360; bits 0-1 RPM; y = x
-  u16 bit0 = rxFrame.data[0];
-  u16 bit1 = rxFrame.data[1];
-  u16 rpm_val = ((bit0 << 8) | bit1);
-#if (HAS_DISPLAY)
-  update_rpm_ui(rpm_val);
-#else
-#endif
-}
-
-void handle_oil_pressure(const CanFrame &rxFrame) {
-  //  0x361; bits 2-3 Oil Pressure KPa; y = x/10 - 101.3
-  u16 bit0 = rxFrame.data[2];
-  u16 bit1 = rxFrame.data[3];
-  u16 pressure_val = ((bit0 << 8) | bit1) / 10.0 - 101.3;
-#if (HAS_DISPLAY)
-  update_oil_pressure_ui(pressure_val);
-#else
-#endif
-}
-
-void handle_engine_voltage(const CanFrame &rxFrame) {
-  //  0x372; bits 0-1 battery voltage Volts; y = x/10
-  u16 bit0 = rxFrame.data[0];
-  u16 bit1 = rxFrame.data[1];
-  u16 voltage_val = ((bit0 << 8) | bit1) / 10.0;
-#if (HAS_DISPLAY)
-  update_engine_voltage_ui(voltage_val);
-#else
-#endif
-}
-
-void handle_oil_temp(const CanFrame &rxFrame) {
-  //  0x3E0; bits 6-7; Oil temperature K; y = x/10
-  u16 bit0 = rxFrame.data[6];
-  u16 bit1 = rxFrame.data[7];
-  u16 temperature_val = ((bit0 << 8) | bit1) / 10.0;
-#if (HAS_DISPLAY)
-  update_oil_temperature_ui(temperature_val);
-#else
-#endif
-}
-void handle_gear_selection(const CanFrame &rxFrame) {
-  //  0x470; bits 7; gear position, enum; enum val ??
-  u16 gear_val = rxFrame.data[6];
-#if (HAS_DISPLAY)
-  update_gear_ui(gear_val);
-#else
-#endif
-}
-
-void handle_engine_light(const CanFrame &rxFrame) {
-  //  0x3E4 bits 7:7 check engine light boolean 0=off, 1=on
-  u8 engine_light_val = (rxFrame.data[7] >> 7) & 0x01;
-#if (HAS_DISPLAY)
-  update_engine_light_ui(engine_light_val);
-#else
-#endif
 }

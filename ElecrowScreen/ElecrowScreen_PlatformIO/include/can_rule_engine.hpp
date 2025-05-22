@@ -1,3 +1,6 @@
+#ifndef _CAN_RULE_ENGINE_HPP
+#define _CAN_RULE_ENGINE_HPP
+
 #include <functional>
 #include <stdio.h>
 #include <utility>
@@ -28,3 +31,5 @@ public:
     }
   }
 };
+
+#endif

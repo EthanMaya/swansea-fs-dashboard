@@ -4,6 +4,14 @@
 #include <ESP32-TWAI-CAN.hpp>
 #include <cstdint>
 
+// ui_erpm            RPM   0x360 0-1 rpm y = x
+// ui_evoltage        V     0x372 0-1 battery voltage Volts y = x/10
+// ui_eoilpressure    P     0x361 0-1 oil pressure kPa y = x/10 - 101.3
+// ui_eoiltemperature T     0x3E0 6-7 oil temp     K   y = x/10
+// ui_egear           Gear  0x470 6 gear selector position enum
+// ui_eengine         E     0x3E4 7:7 check engine light boolean 0=off, 1=on
+// ui_espeed          Speed 0x370 0-1 vehicle speed km/h y = x/10
+
 /* Display flushing */
 void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area,
                    lv_color_t *color_p) {
