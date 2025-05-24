@@ -44,6 +44,7 @@ RuleEngine<CanFrame> rule_engine;
 // ui_eengine         E     0x3E4 7:7 check engine light boolean 0=off, 1=on
 // ui_espeed          Speed 0x370 0-1 vehicle speed km/h y = x/10
 
+uint32_t my_tick_cb() { return millis(); }
 void setup() {
   Serial.begin(9600);
 
@@ -67,11 +68,14 @@ void setup() {
   init_screen();
 #endif
 }
+const uint16_t GUI_PERIOD_MS = 5; // refresh LVGL every 10 ms
+static uint32_t last_gui = 0;
+static uint32_t last_tick = 0;
 
 void loop() {
-  if (ESP32Can.readFrame(rxFrame, 1000)) {
+  if (ESP32Can.readFrame(rxFrame, 0)) {
     Serial.println("In loop");
     rule_engine.run(rxFrame);
   }
-  lv_timer_handler();
+  lv_timer_handler_run_in_period(GUI_PERIOD_MS);
 }
