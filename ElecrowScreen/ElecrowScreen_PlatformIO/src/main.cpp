@@ -69,14 +69,9 @@ void setup() {
 }
 
 void loop() {
-  update = false;
   if (ESP32Can.readFrame(rxFrame, 1000)) {
     Serial.println("In loop");
     rule_engine.run(rxFrame);
   }
-  display_update();
-  if (update) {
-    lv_timer_handler();
-    delay(10);
-  }
+  lv_timer_handler();
 }

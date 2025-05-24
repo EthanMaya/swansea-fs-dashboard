@@ -14,40 +14,14 @@ lv_color_t disp_draw_buf[800 * 480 / 10];
 //  lv_color_t disp_draw_buf;
 lv_disp_drv_t disp_drv;
 
-boolean update = false;
-
 char buf[16];
-boolean engine_error = false;
-boolean engine_switch = false;
 
-boolean speed = false;
-uint16_t speed_value = 0;
+const uint16_t RPM_MIN = 225;
+const uint16_t RPM_MAX = 675;
+const uint16_t TEMP_MAX = 100;
+const uint16_t PRESSURE_MIN = 60;
+const uint16_t VOLTAGE_MIN = 60;
 
-boolean rpm_up = false;
-boolean rpm_up_switch = false;
-boolean rpm_down = false;
-boolean rpm_down_switch = false;
-uint16_t rpm_min = 225;
-uint16_t rpm_max = 675;
-uint16_t rpm_value = 0;
-
-boolean temperature = false;
-boolean temperature_switch = false;
-uint16_t temperature_max = 100;
-uint16_t temperature_value = 0;
-
-boolean pressure = false;
-boolean pressure_switch = false;
-uint16_t pressure_min = 60;
-uint16_t pressure_value = 0;
-
-boolean voltage = false;
-boolean voltage_switch = false;
-uint16_t voltage_min = 60;
-uint16_t voltage_value = 0;
-
-boolean gear = false;
-uint16_t gear_value = 0;
 /* Display flushing */
 void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area,
                    lv_color_t *color_p) {
@@ -130,32 +104,15 @@ void init_screen() {
 
   lv_timer_handler();
 }
-void update_text(uint16_t value, uint16_t &previous_value,
-                 lv_obj_t *ui_element) {
-  if (value != previous_value) {
-    previous_value = value;
-    lv_snprintf(buf, sizeof(buf), "%d", value);
-    lv_label_set_text(ui_element, buf);
-    update = true;
-  }
+void update_text(uint16_t value, lv_obj_t *ui_element) {
+  // Update a LVGL label
+  lv_snprintf(buf, sizeof(buf), "%d", value);
+  lv_label_set_text(ui_element, buf);
 }
-void toggle_min_threshold(uint16_t value, uint16_t min_value,
-                          boolean &condition) {
-  if (value < min_value) {
-    condition = true;
-  } else {
-    condition = false;
-  }
-}
-void toggle_max_threshold(uint16_t value, uint16_t max_value,
-                          boolean &condition) {
-  if (value > max_value) {
-    condition = true;
-  } else {
-    condition = false;
-  }
-}
-void dim_text(boolean condition, lv_obj_t *ui_element) {
+
+void set_dimmed_state(boolean condition, lv_obj_t *ui_element) {
+  // Dim or “undim” an LVGL label based on the condition flag.
+  // if condition is true, the object has full brightness otherwise it is dimmed
   if (condition) {
     lv_obj_set_style_text_color(ui_element, lv_color_hex(0xFFFFFF),
                                 LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -164,85 +121,68 @@ void dim_text(boolean condition, lv_obj_t *ui_element) {
                                 LV_PART_MAIN | LV_STATE_DEFAULT);
   }
 }
-
-void update_speed_ui(uint16_t speed_val) {
-  //  ui_espeed
-  //  ui_espeedarc
-  update_text(speed_val, speed_value, ui_espeed);
-  lv_arc_set_value(ui_espeedarc, speed_val);
-}
-void update_rpm_ui(uint16_t rpm_val) {
-  //  ui_erpm
-  //  ui_erpmbackswitchdown
-  //  ui_erpmbackswitchup
-  //  ui_erpmbar
-  update_text(rpm_val, rpm_value, ui_erpm);
-  lv_bar_set_value(ui_erpmbar, rpm_val, LV_ANIM_OFF);
-  toggle_max_threshold(rpm_val, rpm_max, rpm_up);
-  toggle_min_threshold(rpm_val, rpm_min, rpm_down);
-}
-void update_engine_voltage_ui(uint16_t voltage_val) {
-  //  ui_evoltage
-  //  ui_evoltageback
-  update_text(voltage_val, voltage_value, ui_evoltage);
-  toggle_min_threshold(voltage_val, voltage_min, voltage);
-  dim_text(voltage, ui_evoltage);
-  dim_text(voltage, ui_voltagedu);
-}
-void update_oil_pressure_ui(uint16_t pressure_val) {
-  //  ui_eoilpressure
-  //  ui_eoilpressureback
-  update_text(pressure_val, pressure_value, ui_eoilpressure);
-  toggle_min_threshold(pressure_val, pressure_min, pressure);
-  dim_text(pressure, ui_eoilpressure);
-  dim_text(pressure, ui_oilpressuredu);
-}
-void update_oil_temperature_ui(uint16_t temperature_val) {
-  //  ui_eoiltemperature
-  //  ui_eoiltemperatureback
-  update_text(temperature_val, temperature_value, ui_eoiltemperature);
-  toggle_max_threshold(temperature_val, temperature_max, temperature);
-  dim_text(temperature, ui_eoiltemperature);
-  dim_text(temperature, ui_oiltemperaturedu);
-}
-void update_gear_ui(uint16_t gear_val) {
-  // ui_egear
-  update_text(gear_val, gear_value, ui_egear);
-}
-void update_engine_light_ui(uint16_t engine_light_val) {
-  //  ui_eengine
-  //  ui_eengineback
-  if (engine_light_val == 1) {
-    engine_error = true;
-  } else {
-    engine_error = false;
+bool is_visible(lv_obj_t *o) { return !lv_obj_has_flag(o, LV_OBJ_FLAG_HIDDEN); }
+void toggle_visibility(boolean alert, lv_obj_t *ui_element) {
+  // No alert, hide the object
+  if (!alert) {
+    lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
   }
-  toggle_max_threshold(engine_light_val, 0, engine_error);
-  dim_text(engine_error, ui_enginedu);
-}
-
-void toggle_visibility(boolean condition, boolean &toggle_flag,
-                       lv_obj_t *ui_element) {
-  if (condition) {
-    toggle_flag = !toggle_flag;
-    update = true;
-  } else if (toggle_flag == true) {
-    toggle_flag = false;
-    update = true;
-  }
-
-  if (toggle_flag) {
+  // Otherwise blink the object
+  if (is_visible(ui_element)) {
     lv_obj_clear_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
   } else {
     lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
   }
 }
-void display_update() {
-  toggle_visibility(rpm_up, rpm_up_switch, ui_erpmbackswitchup);
-  toggle_visibility(rpm_down, rpm_down_switch, ui_erpmbackswitchdown);
-  toggle_visibility(engine_error, engine_switch, ui_eengineback);
-  toggle_visibility(temperature, temperature_switch, ui_eoiltemperatureback);
-  toggle_visibility(pressure, pressure_switch, ui_eoilpressureback);
-  toggle_visibility(voltage, voltage_switch, ui_evoltageback);
-  Serial.println(buf);
+
+// Refresh speed label and arc display
+void update_speed_ui(uint16_t speed_val) {
+  update_text(speed_val, ui_espeed);
+  lv_arc_set_value(ui_espeedarc, speed_val);
+}
+
+// Refresh RPM bar and blink alerts when thresholds crossed
+void update_rpm_ui(uint16_t rpm_val) {
+  update_text(rpm_val, ui_erpm);
+  lv_bar_set_value(ui_erpmbar, rpm_val, LV_ANIM_OFF);
+  // Blink icon when above max or below min RPM
+  toggle_visibility((rpm_val > RPM_MAX), ui_erpmbackswitchup);
+  toggle_visibility((rpm_val < RPM_MIN), ui_erpmbackswitchdown);
+}
+
+// Update voltage display; dim text and blink warning if below safe minimum
+void update_engine_voltage_ui(uint16_t voltage_val) {
+  update_text(voltage_val, ui_evoltage);
+  bool dim_voltage = voltage_val < VOLTAGE_MIN; // below safe threshold
+  set_dimmed_state(dim_voltage, ui_evoltage);
+  set_dimmed_state(dim_voltage, ui_voltagedu);
+  toggle_visibility(dim_voltage, ui_evoltageback);
+}
+
+// Update oil pressure display; dim and warn on low pressure
+void update_oil_pressure_ui(uint16_t pressure_val) {
+  update_text(pressure_val, ui_eoilpressure);
+  bool dim_pressure = pressure_val < PRESSURE_MIN;
+  set_dimmed_state(dim_pressure, ui_eoilpressure);
+  set_dimmed_state(dim_pressure, ui_oilpressuredu);
+  toggle_visibility(dim_pressure, ui_eoilpressureback);
+}
+
+// Update oil temperature display; dim and warn on high temperature
+void update_oil_temperature_ui(uint16_t temperature_val) {
+  update_text(temperature_val, ui_eoiltemperature);
+  bool dim_temp = temperature_val > TEMP_MAX; // above safe threshold
+  set_dimmed_state(dim_temp, ui_eoiltemperature);
+  set_dimmed_state(dim_temp, ui_oiltemperaturedu);
+  toggle_visibility(dim_temp, ui_eoiltemperatureback);
+}
+
+// Update gear indicator label
+void update_gear_ui(uint16_t gear_val) { update_text(gear_val, ui_egear); }
+
+// Update engine warning light; dim text and blink icon on error
+void update_engine_light_ui(uint16_t engine_light_val) {
+  bool error = static_cast<bool>(engine_light_val);
+  set_dimmed_state(error, ui_enginedu);
+  toggle_visibility(error, ui_eengineback);
 }

@@ -38,6 +38,5 @@ void update_oil_pressure_ui(uint16_t pressure_val);
 void update_oil_temperature_ui(uint16_t temperature_val);
 void update_gear_ui(uint16_t gear_val);
 void update_engine_light_ui(uint16_t engine_light_val);
-void display_update();
 
 #endif
