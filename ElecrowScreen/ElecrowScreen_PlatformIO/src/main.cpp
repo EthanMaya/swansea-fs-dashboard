@@ -182,6 +182,17 @@ void toggle_visibility(boolean condition, boolean &toggle_flag, lv_obj_t *ui_ele
     lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
   }
 }
+/*
+Voltage works
+Temperature Works Change to Celcius
+Pressure Works kPa
+RPM Works
+Gear Works but is slow?
+
+Check Engine Light Doesn't Work: issue, it's always on
+
+Speed Don't Know
+*/
 
 void display_update() {
   toggle_visibility(rpm_up, rpm_up_switch, ui_erpmbackswitchup);
@@ -309,7 +320,7 @@ void handle_gear_selection(const CanFrame &rxFrame) {
   //ui_egear           Gear  0x470 6 gear selector position enum
   //ui_egear
   // 0x470; bits 7; gear position; enum val ??
-  u16 gear_val = rxFrame.data[6];
+  u16 gear_val = rxFrame.data[7];//7 gear
   //lv_snprintf(buf, sizeof(buf), "%d", gear_val);
   update_text(gear_val, gear_value, ui_egear);
 #if (HAS_DISPLAY)
