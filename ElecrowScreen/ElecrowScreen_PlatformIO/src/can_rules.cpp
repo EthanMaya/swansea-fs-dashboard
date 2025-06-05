@@ -42,7 +42,7 @@ void handle_oil_temp(const CanFrame &rxFrame) {
 }
 void handle_gear_selection(const CanFrame &rxFrame) {
   //  0x470; bits 7; gear position, enum; enum val ??
-  uint16_t gear_val = rxFrame.data[6];
+  uint16_t gear_val = rxFrame.data[7];
   update_gear_ui(gear_val);
 }
 

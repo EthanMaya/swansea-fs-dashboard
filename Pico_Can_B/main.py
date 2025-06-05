@@ -564,7 +564,7 @@ if __name__ == '__main__':
         rpmdata[1] = rpm_value & 0xFF
         can.Send(rpm, rpmdata, dlc)
         
-        speed_value = (speed_value + 5) % 3550
+        speed_value = (speed_value + 5) % 3550 #3550
         speeddata[0] = (speed_value >> 8) & 0xFF  
         speeddata[1] = speed_value & 0xFF
         speeddata[2] = (speed_value >> 8) & 0xFF  

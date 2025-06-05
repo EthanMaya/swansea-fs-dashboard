@@ -20,7 +20,7 @@ const uint16_t RPM_MIN = 225;
 const uint16_t RPM_MAX = 675;
 const uint16_t TEMP_MAX = 100;
 const uint16_t PRESSURE_MIN = 60;
-const uint16_t VOLTAGE_MIN = 60;
+const uint16_t VOLTAGE_MIN = 15;
 
 /* Display flushing */
 void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area,
@@ -126,12 +126,21 @@ void toggle_visibility(boolean alert, lv_obj_t *ui_element) {
   // No alert, hide the object
   if (!alert) {
     lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
-  }
-  // Otherwise blink the object
-  if (is_visible(ui_element)) {
-    lv_obj_clear_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
-  } else {
-    lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
+  } 
+  else 
+  {
+    //Logic is wrong, should be if (!alert) else { ... }
+    
+    // Otherwise blink the object
+    //update_text(is_visible(ui_element), ui_erpm);
+    if (!is_visible(ui_element))
+    {
+      lv_obj_clear_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
+    }
+    else
+    {
+      lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
+    }
   }
 }
 
