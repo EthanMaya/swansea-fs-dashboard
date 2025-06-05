@@ -4,6 +4,28 @@
 // Project name: ElecrowScreen
 
 #include "ui.h"
+#include "config.h"
+// const uint16_t RPM_DISPLAY_MIN = 0;     // Minimum RPM value that can be shown on the slider.
+// const uint16_t RPM_DISPLAY_MAX = 900;   // Maximum RPM value that can be shown on the slider.
+const float OLD_RANGE = RPM_DISPLAY_MAX - RPM_DISPLAY_MIN;
+const float NEW_RANGE = 800;
+const float MULTIPLIER = NEW_RANGE / OLD_RANGE;
+const int OFFSET = 400;
+
+const int greenWidth = (RPM_MAX - RPM_MIN) * MULTIPLIER;
+const int greenX = (MULTIPLIER * RPM_MIN) + (greenWidth/2) - OFFSET;
+
+const int blueWidth = (RPM_MIN - RPM_DISPLAY_MIN) * MULTIPLIER;
+const int blueX = (MULTIPLIER * RPM_DISPLAY_MIN) + (blueWidth/2) - OFFSET;
+
+const int redWidth = (RPM_DISPLAY_MAX - RPM_MAX) * MULTIPLIER;
+const int redX = (MULTIPLIER * RPM_MAX) + (redWidth/2) - OFFSET;
+
+// const uint16_t MID_RANGE = RANGE / 2 - 400;
+
+// //message Ethan or David to get the red and blue to line up with shifting.
+// const uint16_t RPM_MIN = 225;     // Starts flashing when RPM drops *below* this value (shift down).
+// const uint16_t RPM_MAX = 675;     // Starts flashing when RPM exceeds *above* this value (shift up).
 
 void ui_Screen1_screen_init(void)
 {
@@ -11,9 +33,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_clear_flag(ui_Screen1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
 
     ui_rpmbackgreen = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_rpmbackgreen, 400);
+    lv_obj_set_width(ui_rpmbackgreen, greenWidth);//400
     lv_obj_set_height(ui_rpmbackgreen, 100);
-    lv_obj_set_x(ui_rpmbackgreen, 0);
+    lv_obj_set_x(ui_rpmbackgreen, greenX); //0
     lv_obj_set_y(ui_rpmbackgreen, -190);
     lv_obj_set_align(ui_rpmbackgreen, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmbackgreen, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -21,9 +43,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_rpmbackgreen, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_rpmbackblue = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_rpmbackblue, 200);
+    lv_obj_set_width(ui_rpmbackblue, blueWidth);//200
     lv_obj_set_height(ui_rpmbackblue, 100);
-    lv_obj_set_x(ui_rpmbackblue, -300);
+    lv_obj_set_x(ui_rpmbackblue, blueX);//-300
     lv_obj_set_y(ui_rpmbackblue, -190);
     lv_obj_set_align(ui_rpmbackblue, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmbackblue, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -31,9 +53,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_rpmbackblue, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_rpmbackred = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_rpmbackred, 200);
+    lv_obj_set_width(ui_rpmbackred, redWidth); //200
     lv_obj_set_height(ui_rpmbackred, 100);
-    lv_obj_set_x(ui_rpmbackred, 300);
+    lv_obj_set_x(ui_rpmbackred, redX);//300
     lv_obj_set_y(ui_rpmbackred, -190);
     lv_obj_set_align(ui_rpmbackred, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmbackred, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -63,7 +85,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_erpmbackswitchdown, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_erpmbar = lv_bar_create(ui_Screen1);
-    lv_bar_set_range(ui_erpmbar, 0, 900);
+    lv_bar_set_range(ui_erpmbar, RPM_DISPLAY_MIN, RPM_DISPLAY_MAX);
     lv_bar_set_value(ui_erpmbar, 80, LV_ANIM_OFF);
     lv_bar_set_start_value(ui_erpmbar, 0, LV_ANIM_OFF);
     lv_obj_set_width(ui_erpmbar, 800);
@@ -87,9 +109,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_rpmtextback, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_rpmfrontgreen = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_rpmfrontgreen, 400);
+    lv_obj_set_width(ui_rpmfrontgreen, greenWidth);//400
     lv_obj_set_height(ui_rpmfrontgreen, 100);
-    lv_obj_set_x(ui_rpmfrontgreen, 0);
+    lv_obj_set_x(ui_rpmfrontgreen, greenX);//0
     lv_obj_set_y(ui_rpmfrontgreen, -190);
     lv_obj_set_align(ui_rpmfrontgreen, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmfrontgreen, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -97,9 +119,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_rpmfrontgreen, 100, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_rpmfrontblue = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_rpmfrontblue, 200);
+    lv_obj_set_width(ui_rpmfrontblue, blueWidth); //200
     lv_obj_set_height(ui_rpmfrontblue, 100);
-    lv_obj_set_x(ui_rpmfrontblue, -300);
+    lv_obj_set_x(ui_rpmfrontblue, blueX);//-300
     lv_obj_set_y(ui_rpmfrontblue, -190);
     lv_obj_set_align(ui_rpmfrontblue, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmfrontblue, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -107,9 +129,9 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_bg_opa(ui_rpmfrontblue, 100, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_rpmfrontred = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_rpmfrontred, 200);
+    lv_obj_set_width(ui_rpmfrontred, redWidth); //200
     lv_obj_set_height(ui_rpmfrontred, 100);
-    lv_obj_set_x(ui_rpmfrontred, 300);
+    lv_obj_set_x(ui_rpmfrontred, redX);//300
     lv_obj_set_y(ui_rpmfrontred, -190);
     lv_obj_set_align(ui_rpmfrontred, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmfrontred, 0, LV_PART_MAIN | LV_STATE_DEFAULT);

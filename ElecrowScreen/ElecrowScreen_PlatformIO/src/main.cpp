@@ -4,6 +4,7 @@
 #include "ui_code.hpp"
 #include <ESP32-TWAI-CAN.hpp>
 #include <lvgl.h>
+#include "config.h"
 
 #define CAN_TX 44
 #define CAN_RX 43
@@ -36,22 +37,11 @@ public:
   }
 };
 
-#if (HAS_DISPLAY)
-// Define lvgl vars here
-;
-#endif
 
 //
 char buf[16];
 CanFrame rxFrame;
 RuleEngine<CanFrame> rule_engine;
-    //ui_erpm            RPM   0x360 0-1 rpm y = x
-    //ui_evoltage        V     0x372 0-1 battery voltage Volts y = x/10
-    //ui_eoilpressure    P     0x361 0-1 oil pressure kPa y = x/10 - 101.3
-    //ui_eoiltemperature T     0x3E0 6-7 oil temp     K   y = x/10
-    //ui_egear           Gear  0x470 6 gear selector position enum
-    //ui_eengine         E     0x3E4 7:7 check engine light boolean 0=off, 1=on
-    //ui_espeed          Speed 0x370 0-1 vehicle speed km/h y = x/10
 
 
 boolean update = false;
@@ -66,23 +56,23 @@ boolean rpm_up = false;
 boolean rpm_up_switch = false;
 boolean rpm_down = false;
 boolean rpm_down_switch = false;
-u16 rpm_min = 225;
-u16 rpm_max = 675;
+u16 rpm_min = RPM_MIN;
+u16 rpm_max = RPM_MAX;
 u16 rpm_value = 0;
 
 boolean temperature = false;
 boolean temperature_switch = false;
-u16 temperature_max = 100;
+u16 temperature_max = TEMP_MAX;
 u16 temperature_value = 0;
 
 boolean pressure = false;
 boolean pressure_switch = false;
-u16 pressure_min = 60;
+u16 pressure_min = PRESSURE_MIN;
 u16 pressure_value = 0;
 
 boolean voltage = false;
 boolean voltage_switch = false;
-u16 voltage_min = 60;
+u16 voltage_min = VOLTAGE_MIN;
 u16 voltage_value = 0;
 
 boolean gear = false;
@@ -300,7 +290,7 @@ void handle_oil_temp(const CanFrame &rxFrame) {
   // 0x3E0; bits 6-7; Oil temperature; y = x/10
   u16 bit0 = rxFrame.data[6];
   u16 bit1 = rxFrame.data[7];
-  u16 temperature_val = ((bit0 << 8) | bit1) / 10.0;
+  u16 temperature_val = (((bit0 << 8) | bit1) / 10.0) -273.15;
   //lv_snprintf(buf, sizeof(buf), "%d", temperature_val);
   update_text(temperature_val, temperature_value, ui_eoiltemperature);
   toggle_max_threshold(temperature_val, temperature_max, temperature);
