@@ -14,3 +14,5 @@ esp32-s3-devkitc-1-myboard.json located in Resources\PlatformIO  has been copied
 The Screen code is located in ElecrowScreen\ElecrowScreen_PlatformIO
 
 open VSCode in ElecrowScreen\ElecrowScreen_PlatformIO
+
+add conf.h to .pio directory.
