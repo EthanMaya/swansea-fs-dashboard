@@ -155,7 +155,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_erpm, 60);
     lv_obj_set_y(ui_erpm, 25);
     lv_obj_set_align(ui_erpm, LV_ALIGN_TOP_MID);
-    lv_label_set_text(ui_erpm, "1234");
+    lv_label_set_text(ui_erpm, "U");
     lv_obj_set_style_text_color(ui_erpm, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_erpm, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_erpm, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -175,7 +175,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_egear, 297);
     lv_obj_set_y(ui_egear, -29);
     lv_obj_set_align(ui_egear, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_egear, "5");
+    lv_label_set_text(ui_egear, "U");
     lv_obj_set_style_text_font(ui_egear, &ui_font_Font250, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eengineback = lv_btn_create(ui_Screen1);
@@ -230,7 +230,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_evoltage, 100);
     lv_obj_set_y(ui_evoltage, -100);
     lv_obj_set_align(ui_evoltage, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(ui_evoltage, "1234");
+    lv_label_set_text(ui_evoltage, "U");
     lv_obj_set_style_text_align(ui_evoltage, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_evoltage, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -258,7 +258,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_eoiltemperature, 380);
     lv_obj_set_y(ui_eoiltemperature, -75);
     lv_obj_set_align(ui_eoiltemperature, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_eoiltemperature, "1234");
+    lv_label_set_text(ui_eoiltemperature, "U");
     lv_obj_set_style_text_font(ui_eoiltemperature, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_speeddu = lv_label_create(ui_Screen1);
@@ -276,7 +276,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_espeed, 12);
     lv_obj_set_y(ui_espeed, 104);
     lv_obj_set_align(ui_espeed, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_espeed, "72");
+    lv_label_set_text(ui_espeed, "U");
     lv_obj_set_style_text_font(ui_espeed, &ui_font_Font150, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eoilpressureback = lv_btn_create(ui_Screen1);
@@ -303,7 +303,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_eoilpressure, 660);
     lv_obj_set_y(ui_eoilpressure, -50);
     lv_obj_set_align(ui_eoilpressure, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(ui_eoilpressure, "1234");
+    lv_label_set_text(ui_eoilpressure, "U");
     lv_obj_set_style_text_font(ui_eoilpressure, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_espeedarc = lv_arc_create(ui_Screen1);
