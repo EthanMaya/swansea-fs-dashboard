@@ -319,7 +319,6 @@ void handle_engine_light(const CanFrame &rxFrame) {
   {
     engine_error = false;
   }
-  update_text(engine_light_val, ui_enginedu);
   toggle_max_threshold(engine_light_val, 0, engine_error);
   dim_text(engine_error, ui_enginedu);
 }
