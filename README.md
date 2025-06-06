@@ -10,8 +10,8 @@ VSCode is installed
 platformio is installed as a package on vscode
 
 esp32-s3-devkitc-1-myboard.json located in Resources\PlatformIO  has been copied into 
-Windows C:\Users\<username>\.platformio\espressif32\boards
-Linux /home/.platformio/espressif32/boards
+Windows C:\Users\<username>\.platformio\platforms\espressif32\boards
+Linux ~/.platformio/platforms/espressif32/boards
 The Screen code is located in ElecrowScreen\ElecrowScreen_PlatformIO
 
 open VSCode in ElecrowScreen\ElecrowScreen_PlatformIO
