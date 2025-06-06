@@ -24,7 +24,7 @@ Once you have uploaded, plug the 4 wire connector back together.
 
 3:
 if it's not working (will say something like Errno 2 could not open port /dev/ttyUSB0), this means the port is'nt registering so it isn't connecting properly. 
-Open terminal (the black box next to VScode) and type in (don't copy) the EXACT following text including spaces and *.
+Open terminal (the black box next to VScode) and type in (don't copy) the exact following text including spaces and *.
 ls /dev/tty*
 
 Press Enter. you should see a bunch of /dev/tty0, /dev/tty1 ... see if /dev/ttyUSB0 is one of them. If it isn't, unplug and replug until it is. Each time you plug it in, you have to type ls /dev/tty* and enter.
