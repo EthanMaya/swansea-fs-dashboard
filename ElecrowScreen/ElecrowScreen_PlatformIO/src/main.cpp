@@ -47,36 +47,12 @@ RuleEngine<CanFrame> rule_engine;
 boolean update = false;
 
 boolean engine_error = false;
-boolean engine_switch = false;
-
-boolean speed = false;
-u16 speed_value = 0;
-
 boolean rpm_up = false;
-boolean rpm_up_switch = false;
 boolean rpm_down = false;
-boolean rpm_down_switch = false;
-u16 rpm_min = RPM_MIN;
-u16 rpm_max = RPM_MAX;
-u16 rpm_value = 0;
-
 boolean temperature = false;
-boolean temperature_switch = false;
-u16 temperature_max = TEMP_MAX;
-u16 temperature_value = 0;
-
 boolean pressure = false;
-boolean pressure_switch = false;
-u16 pressure_min = PRESSURE_MIN;
-u16 pressure_value = 0;
-
 boolean voltage = false;
-boolean voltage_switch = false;
-u16 voltage_min = VOLTAGE_MIN;
-u16 voltage_value = 0;
-
 boolean gear = false;
-u16 gear_value = 0;
 
 void setup()
 {
@@ -107,24 +83,17 @@ void loop() {
   update = false;
   if (ESP32Can.readFrame(rxFrame, 1000))
   {
-    Serial.println("In loop");
+    //Serial.println("In loop");
     rule_engine.run(rxFrame);
   }
   display_update();
   if (update)
   {
     lv_timer_handler();
-    delay(10);
+    //delay(10);
   }
 }
-void update_text(u16 value, u16 &previous_value, lv_obj_t *ui_element) {
-  if (value != previous_value) {
-    previous_value = value;
-    lv_snprintf(buf, sizeof(buf), "%d", value);
-    lv_label_set_text(ui_element, buf);
-    update = true;
-  }
-}
+
 void toggle_min_threshold(u16 value, u16 min_value, boolean &condition) {
   if (value < min_value) {
     condition = true;
@@ -154,24 +123,37 @@ void dim_text(boolean condition, lv_obj_t *ui_element) {
   }
 
 }
-void toggle_visibility(boolean condition, boolean &toggle_flag, lv_obj_t *ui_element) {
-  if (condition) 
+void update_text(u16 value, lv_obj_t *ui_element) {
+  lv_snprintf(buf, sizeof(buf), "%d", value);
+  lv_label_set_text(ui_element, buf);
+  update = true;
+}
+bool is_visible(lv_obj_t *o) { return !lv_obj_has_flag(o, LV_OBJ_FLAG_HIDDEN); }
+void toggle_visibility(boolean condition, lv_obj_t *ui_element) {
+  boolean toggle_flag = is_visible(ui_element); //true clear
+  if (condition)
   {
-    toggle_flag = !toggle_flag;
     update = true;
   }
-  else if (toggle_flag == true)
+  else if (toggle_flag == false)
   {
-    toggle_flag = false;
+    toggle_flag = true;
     update = true;
   }
 
-  if (toggle_flag) {
-    lv_obj_clear_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
-  } else {
-    lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
-  }
+  if (update) 
+  {
+    if (toggle_flag) 
+    {
+      lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
+    } 
+    else 
+    {
+      lv_obj_clear_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
+    }
+    }
 }
+
 /*
 Voltage works
 Temperature Works Change to Celcius
@@ -185,13 +167,16 @@ Speed Don't Know
 */
 
 void display_update() {
-  toggle_visibility(rpm_up, rpm_up_switch, ui_erpmbackswitchup);
-  toggle_visibility(rpm_down, rpm_down_switch, ui_erpmbackswitchdown);
-  toggle_visibility(engine_error, engine_switch, ui_eengineback);
-  toggle_visibility(temperature, temperature_switch, ui_eoiltemperatureback);
-  toggle_visibility(pressure, pressure_switch, ui_eoilpressureback);
-  toggle_visibility(voltage, voltage_switch, ui_evoltageback);
+
+  toggle_visibility(rpm_up, ui_erpmbackswitchup);
+  toggle_visibility(rpm_down, ui_erpmbackswitchdown);
+  toggle_visibility(engine_error, ui_eengineback);
+  toggle_visibility(temperature, ui_eoiltemperatureback);
+  toggle_visibility(pressure, ui_eoilpressureback);
+  toggle_visibility(voltage, ui_evoltageback);
 }
+
+
 void handle_speed(const CanFrame &rxFrame) {
   //ui_espeed          Speed 0x370 0-1 vehicle speed km/h y = x/10
   // ui_espeed
@@ -200,7 +185,7 @@ void handle_speed(const CanFrame &rxFrame) {
   u16 bit0 = rxFrame.data[0];
   u16 bit1 = rxFrame.data[1];
   u16 speed_val = ((bit0 << 8) | bit1)/10;
-  update_text(speed_val, speed_value, ui_espeed);
+  update_text(speed_val, ui_espeed);
   //lv_snprintf(buf, sizeof(buf), "%d", speed_val);
   lv_arc_set_value(ui_espeedarc, speed_val);
 #if (HAS_DISPLAY)
@@ -223,10 +208,10 @@ void handle_rpm(const CanFrame &rxFrame) {
   u16 bit0 = rxFrame.data[0];
   u16 bit1 = rxFrame.data[1];
   u16 rpm_val = ((bit0 << 8) | bit1);
-  update_text(rpm_val, rpm_value, ui_erpm);
+  update_text(rpm_val, ui_erpm);
   lv_bar_set_value(ui_erpmbar, rpm_val, LV_ANIM_OFF);
-  toggle_max_threshold(rpm_val, rpm_max, rpm_up);
-  toggle_min_threshold(rpm_val, rpm_min, rpm_down);
+  toggle_max_threshold(rpm_val, RPM_MAX, rpm_up);
+  toggle_min_threshold(rpm_val, RPM_MIN, rpm_down);
 #if (HAS_DISPLAY)
   // Update display
   // lv_timer_handler();
@@ -247,8 +232,8 @@ void handle_engine_voltage(const CanFrame &rxFrame) {
   u16 voltage_val = ((bit0 << 8) | bit1) / 10.0;
   // lv_snprintf(buf, sizeof(buf), "%d", voltage_val);
   // lv_label_set_text(ui_evoltage, buf);
-  update_text(voltage_val, voltage_value, ui_evoltage);
-  toggle_min_threshold(voltage_val, voltage_min, voltage);
+  update_text(voltage_val, ui_evoltage);
+  toggle_min_threshold(voltage_val, VOLTAGE_MIN, voltage);
   dim_text(voltage, ui_evoltage);
   dim_text(voltage, ui_voltagedu);
 #if (HAS_DISPLAY)
@@ -269,8 +254,8 @@ void handle_oil_pressure(const CanFrame &rxFrame) {
   u16 bit1 = rxFrame.data[3];
   u16 pressure_val = ((bit0 << 8) | bit1) / 10.0 - 101.3;
   //lv_snprintf(buf, sizeof(buf), "%d", pressure_val);
-  update_text(pressure_val, pressure_value, ui_eoilpressure);
-  toggle_min_threshold(pressure_val, pressure_min, pressure);
+  update_text(pressure_val, ui_eoilpressure);
+  toggle_min_threshold(pressure_val, PRESSURE_MIN, pressure);
   dim_text(pressure, ui_eoilpressure);
   dim_text(pressure, ui_oilpressuredu);
 #if (HAS_DISPLAY)
@@ -292,8 +277,8 @@ void handle_oil_temp(const CanFrame &rxFrame) {
   u16 bit1 = rxFrame.data[7];
   u16 temperature_val = (((bit0 << 8) | bit1) / 10.0) -273.15;
   //lv_snprintf(buf, sizeof(buf), "%d", temperature_val);
-  update_text(temperature_val, temperature_value, ui_eoiltemperature);
-  toggle_max_threshold(temperature_val, temperature_max, temperature);
+  update_text(temperature_val, ui_eoiltemperature);
+  toggle_max_threshold(temperature_val, TEMP_MAX, temperature);
   dim_text(temperature, ui_eoiltemperature);
   dim_text(temperature, ui_oiltemperaturedu);
 #if (HAS_DISPLAY)
@@ -312,16 +297,8 @@ void handle_gear_selection(const CanFrame &rxFrame) {
   // 0x470; bits 7; gear position; enum val ??
   u16 gear_val = rxFrame.data[7];//7 gear
   //lv_snprintf(buf, sizeof(buf), "%d", gear_val);
-  update_text(gear_val, gear_value, ui_egear);
-#if (HAS_DISPLAY)
-  // Update display
-  //lv_label_set_text(ui_egear, buf);
-  // lv_timer_handler();
-  // delay(10);
-#else
-  Serial.print("Gear: ");
-  Serial.println(buf);
-#endif
+  update_text(gear_val, ui_egear);
+
 }
 
 void handle_engine_light(const CanFrame &rxFrame) {
@@ -339,18 +316,8 @@ void handle_engine_light(const CanFrame &rxFrame) {
   {
     engine_error = false;
   }
+  update_text(engine_light_val, ui_enginedu);
   toggle_max_threshold(engine_light_val, 0, engine_error);
   dim_text(engine_error, ui_enginedu);
-
-#if (HAS_DISPLAY)
-  //toggle_visibility(engine_error, engine_switch, ui_eengineback);
-  // Update display
-  //lv_label_set_text(ui_eengine, buf);
-  // lv_timer_handler();
-  // delay(10);
-#else
-  Serial.print("engine light: ");
-  Serial.println(buf);
-#endif
 }
 
