@@ -1,3 +1,6 @@
+/*
+########################## open include directory and edit config.h to change values ############################
+*/
 #include "can_rule_engine.h"
 #include "driver/twai.h"
 #include "ui.h"
