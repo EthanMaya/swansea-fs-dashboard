@@ -16,7 +16,7 @@ If you need anything changing which is not in there, please contact either David
 
 2:
 To upload your changes to the screen:
-plug in the screens white usb A cable into the usb connecter which works (left side of computer).
+plug in the screens white usb A cable into the usb connecter which (sometimes) works (left side of computer).
 There may be a large 4 wire connector attached to the screen. make sure that is not plugged in.
 If it doesn't work the first time, go to step 3.
 Inside VSCode, click on the right facing arrow -> on the bottom middle left which says platformio upload on it when you hover over it. 
@@ -47,6 +47,11 @@ search for platformio in vscode extenstions and install.
 
 copy esp32-s3-devkitc-1-myboard.json located in Resources\PlatformIO into 
 Windows C:\Users\<username>.\platformio\platforms\espressif32\boards
+Linux ~/.platformio/platforms/espressif32/boards
+
+
+esp32-s3-devkitc-1-myboard.json located in Resources\PlatformIO  has been copied into 
+Windows C:\Users\<username>\.platformio\platforms\espressif32\boards
 Linux ~/.platformio/platforms/espressif32/boards
 
 The Screen code is located in ElecrowScreen\ElecrowScreen_PlatformIO
