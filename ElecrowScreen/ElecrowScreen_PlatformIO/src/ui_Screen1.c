@@ -227,7 +227,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_eoiltemperature, 50);
     lv_obj_set_y(ui_eoiltemperature, 110);
     lv_obj_set_align(ui_eoiltemperature, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_eoiltemperature, "u");
+    lv_label_set_text(ui_eoiltemperature, "U");
     lv_obj_set_style_text_font(ui_eoiltemperature, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eoilpressureback = lv_btn_create(ui_Screen1);

@@ -66,11 +66,11 @@ void setup()
     Serial.println("CAN bus failed!");
   }
 
+  rule_engine.add_rule(CompareIdentifier(0x470), &handle_gear_selection);
   rule_engine.add_rule(CompareIdentifier(0x360), &handle_rpm);
   rule_engine.add_rule(CompareIdentifier(0x372), &handle_engine_voltage);
   rule_engine.add_rule(CompareIdentifier(0x361), &handle_oil_pressure);
   rule_engine.add_rule(CompareIdentifier(0x3E0), &handle_oil_temp);
-  rule_engine.add_rule(CompareIdentifier(0x470), &handle_gear_selection);
 
 #if (HAS_DISPLAY)
   init_screen();
