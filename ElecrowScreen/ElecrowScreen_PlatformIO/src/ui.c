@@ -41,7 +41,7 @@ lv_obj_t * ui_eoilpressureback;
 lv_obj_t * ui_oilpressuredu;
 lv_obj_t * ui_eoilpressure;
 lv_obj_t * ui_espeedarc;
-// CUSTOM VARIABLES
+// CUSTOM VARIABLES  
 
 // EVENTS
 lv_obj_t * ui____initial_actions0;
