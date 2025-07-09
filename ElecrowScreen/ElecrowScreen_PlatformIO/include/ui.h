@@ -18,29 +18,8 @@ extern "C" {
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
 extern lv_obj_t * ui_Screen1;
-extern lv_obj_t * ui_rpmbackgreen;
-extern lv_obj_t * ui_rpmbackblue;
-extern lv_obj_t * ui_rpmbackred;
-extern lv_obj_t * ui_erpmbackswitchup;
-extern lv_obj_t * ui_erpmbackswitchdown;
-extern lv_obj_t * ui_erpmbar;
-extern lv_obj_t * ui_rpmtextback;
-extern lv_obj_t * ui_rpmfrontgreen;
-extern lv_obj_t * ui_rpmfrontblue;
-extern lv_obj_t * ui_rpmfrontred;
-extern lv_obj_t * ui_rpmdu;
-extern lv_obj_t * ui_erpm;
 extern lv_obj_t * ui_geardu;
 extern lv_obj_t * ui_egear;
-extern lv_obj_t * ui_evoltageback;
-extern lv_obj_t * ui_voltagedu;
-extern lv_obj_t * ui_evoltage;
-extern lv_obj_t * ui_eoiltemperatureback;
-extern lv_obj_t * ui_oiltemperaturedu;
-extern lv_obj_t * ui_eoiltemperature;
-extern lv_obj_t * ui_eoilpressureback;
-extern lv_obj_t * ui_oilpressuredu;
-extern lv_obj_t * ui_eoilpressure;
 // CUSTOM VARIABLES
 
 // EVENTS

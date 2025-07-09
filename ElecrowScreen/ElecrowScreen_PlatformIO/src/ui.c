@@ -12,29 +12,9 @@
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
 lv_obj_t * ui_Screen1;
-lv_obj_t * ui_rpmbackgreen;
-lv_obj_t * ui_rpmbackblue;
-lv_obj_t * ui_rpmbackred;
-lv_obj_t * ui_erpmbackswitchup;
-lv_obj_t * ui_erpmbackswitchdown;
-lv_obj_t * ui_erpmbar;
-lv_obj_t * ui_rpmtextback;
-lv_obj_t * ui_rpmfrontgreen;
-lv_obj_t * ui_rpmfrontblue;
-lv_obj_t * ui_rpmfrontred;
-lv_obj_t * ui_rpmdu;
-lv_obj_t * ui_erpm;
+
 lv_obj_t * ui_geardu;
 lv_obj_t * ui_egear;
-lv_obj_t * ui_evoltageback;
-lv_obj_t * ui_voltagedu;
-lv_obj_t * ui_evoltage;
-lv_obj_t * ui_eoiltemperatureback;
-lv_obj_t * ui_oiltemperaturedu;
-lv_obj_t * ui_eoiltemperature;
-lv_obj_t * ui_eoilpressureback;
-lv_obj_t * ui_oilpressuredu;
-lv_obj_t * ui_eoilpressure;
 // CUSTOM VARIABLES  
 
 // EVENTS
