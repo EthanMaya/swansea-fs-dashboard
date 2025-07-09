@@ -26,15 +26,6 @@ lv_obj_t * ui_rpmdu;
 lv_obj_t * ui_erpm;
 lv_obj_t * ui_geardu;
 lv_obj_t * ui_egear;
-lv_obj_t * ui_evoltageback;
-lv_obj_t * ui_voltagedu;
-lv_obj_t * ui_evoltage;
-lv_obj_t * ui_eoiltemperatureback;
-lv_obj_t * ui_oiltemperaturedu;
-lv_obj_t * ui_eoiltemperature;
-lv_obj_t * ui_eoilpressureback;
-lv_obj_t * ui_oilpressuredu;
-lv_obj_t * ui_eoilpressure;
 // CUSTOM VARIABLES  
 
 // EVENTS

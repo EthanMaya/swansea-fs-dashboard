@@ -32,15 +32,6 @@ extern lv_obj_t * ui_rpmdu;
 extern lv_obj_t * ui_erpm;
 extern lv_obj_t * ui_geardu;
 extern lv_obj_t * ui_egear;
-extern lv_obj_t * ui_evoltageback;
-extern lv_obj_t * ui_voltagedu;
-extern lv_obj_t * ui_evoltage;
-extern lv_obj_t * ui_eoiltemperatureback;
-extern lv_obj_t * ui_oiltemperaturedu;
-extern lv_obj_t * ui_eoiltemperature;
-extern lv_obj_t * ui_eoilpressureback;
-extern lv_obj_t * ui_oilpressuredu;
-extern lv_obj_t * ui_eoilpressure;
 // CUSTOM VARIABLES
 
 // EVENTS
