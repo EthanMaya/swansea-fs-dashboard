@@ -34,6 +34,7 @@ public:
   }
 };
 
+void handle_gear_selection(const CanFrame &rxFrame);
 
 //
 char buf[16];
