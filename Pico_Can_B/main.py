@@ -522,7 +522,7 @@ if __name__ == '__main__':
     print("init...")
     can.Init()
     print("send data...")
-
+    #360 - 700
     speed = 0x370
     rpm = 0x360
     voltage = 0x372
@@ -540,6 +540,9 @@ if __name__ == '__main__':
     
     speeddata = [0, 0, 9, 9, 9, 9, 9, 9]
     temppressdata = [0, 0, 9, 9, 9, 9]
+
+    a = 0
+    gear =  [9, 9, 9, 9, 9, 9, 9, a]
     
     speed_value = 0
     temppress = 150
@@ -556,6 +559,10 @@ if __name__ == '__main__':
     i = 0
     flashing = False
     while True:
+        for j in range(100):
+            for k in range(0x360, 0x701):
+                can.Send(rpm, gear, dlc)
+                a+=1
         #print("AHHH")
         led.on()
         #can.Send(gear, data, dlc)
