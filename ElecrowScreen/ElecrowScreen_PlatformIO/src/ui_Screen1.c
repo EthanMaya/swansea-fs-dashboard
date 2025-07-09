@@ -21,6 +21,8 @@ const int blueX = (MULTIPLIER * RPM_DISPLAY_MIN) + (blueWidth/2) - OFFSET;
 const int redWidth = (RPM_DISPLAY_MAX - RPM_MAX) * MULTIPLIER;
 const int redX = (MULTIPLIER * RPM_MAX) + (redWidth/2) - OFFSET;
 
+const int y_value = 240 - (BAR_HEIGHT / 2);
+
 // const uint16_t MID_RANGE = RANGE / 2 - 400;
 
 // //message Ethan or David to get the red and blue to line up with shifting.
@@ -36,7 +38,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_width(ui_rpmbackgreen, greenWidth);//400
     lv_obj_set_height(ui_rpmbackgreen, 100);
     lv_obj_set_x(ui_rpmbackgreen, greenX); //0
-    lv_obj_set_y(ui_rpmbackgreen, -190);
+    lv_obj_set_y(ui_rpmbackgreen, y_value);
     lv_obj_set_align(ui_rpmbackgreen, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmbackgreen, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_rpmbackgreen, lv_color_hex(0x00FF36), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -112,7 +114,7 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_width(ui_rpmfrontgreen, greenWidth);//400
     lv_obj_set_height(ui_rpmfrontgreen, 100);
     lv_obj_set_x(ui_rpmfrontgreen, greenX);//0
-    lv_obj_set_y(ui_rpmfrontgreen, -190);
+    lv_obj_set_y(ui_rpmfrontgreen, y_value);
     lv_obj_set_align(ui_rpmfrontgreen, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmfrontgreen, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_rpmfrontgreen, lv_color_hex(0x00FF36), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -256,5 +258,5 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_align(ui_eoilpressure, LV_ALIGN_RIGHT_MID);
     lv_label_set_text(ui_eoilpressure, "1234");
     lv_obj_set_style_text_font(ui_eoilpressure, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-    
+
 }

@@ -15,6 +15,9 @@
 #define PRESSURE_MIN 60        // Starts flashing when oil pressure falls *below* this value. kPa.
 
 #define VOLTAGE_MIN 12         // Starts flashing when voltage drops *below* this value.
+                               
+                               
+#define BAR_HEIGHT 200         // Height of Red, Blue, Green Bar and Slider. maximum is 480 (height of screen).
 
 /*
 If you have any issues, please contact Ethan Maya at ethanmayaemail@gmail.com or if it's urgent, preferably whatsapp me or give me a ring on 07598 413640.
