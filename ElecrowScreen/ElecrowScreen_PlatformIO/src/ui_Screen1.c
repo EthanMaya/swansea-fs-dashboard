@@ -179,35 +179,6 @@ void ui_Screen1_screen_init(void)
     lv_label_set_text(ui_egear, "5");
     lv_obj_set_style_text_font(ui_egear, &ui_font_Font250, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    ui_eengineback = lv_btn_create(ui_Screen1);
-    lv_obj_set_width(ui_eengineback, 200);
-    lv_obj_set_height(ui_eengineback, 60);
-    lv_obj_set_x(ui_eengineback, 30);
-    lv_obj_set_y(ui_eengineback, 0);
-    lv_obj_set_align(ui_eengineback, LV_ALIGN_LEFT_MID);
-    lv_obj_add_flag(ui_eengineback, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_set_style_bg_color(ui_eengineback, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui_eengineback, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_enginedu = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_enginedu, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_enginedu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_enginedu, 60);
-    lv_obj_set_y(ui_enginedu, 0);
-    lv_obj_set_align(ui_enginedu, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_enginedu, "E");
-    lv_obj_add_flag(ui_enginedu, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_set_style_text_font(ui_enginedu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_eengine = lv_label_create(ui_Screen1);
-    lv_obj_set_width(ui_eengine, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_eengine, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_eengine, 100);
-    lv_obj_set_y(ui_eengine, 0);
-    lv_obj_set_align(ui_eengine, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_eengine, "1234");
-    lv_obj_add_flag(ui_eengine, LV_OBJ_FLAG_HIDDEN);     /// Flags
-    lv_obj_set_style_text_font(ui_eengine, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_evoltageback = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_evoltageback, 200);

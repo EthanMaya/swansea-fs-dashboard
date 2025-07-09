@@ -27,7 +27,6 @@ void handle_engine_voltage(const CanFrame &rxFrame);
 void handle_oil_pressure(const CanFrame &rxFrame);
 void handle_oil_temp(const CanFrame &rxFrame);
 void handle_gear_selection(const CanFrame &rxFrame);
-void handle_engine_light(const CanFrame &rxFrame);
 void display_update();
 
 class CompareIdentifier {
@@ -49,7 +48,6 @@ RuleEngine<CanFrame> rule_engine;
 
 boolean update = false;
 
-boolean engine_error = false;
 boolean rpm_up = false;
 boolean rpm_down = false;
 boolean temperature = false;
@@ -75,7 +73,6 @@ void setup()
   rule_engine.add_rule(CompareIdentifier(0x361), &handle_oil_pressure);
   rule_engine.add_rule(CompareIdentifier(0x3E0), &handle_oil_temp);
   rule_engine.add_rule(CompareIdentifier(0x470), &handle_gear_selection);
-  rule_engine.add_rule(CompareIdentifier(0x3E4), &handle_engine_light);
 
 #if (HAS_DISPLAY)
   init_screen();
@@ -173,7 +170,6 @@ void display_update() {
 
   toggle_visibility(rpm_up, ui_erpmbackswitchup);
   toggle_visibility(rpm_down, ui_erpmbackswitchdown);
-  toggle_visibility(engine_error, ui_eengineback);
   toggle_visibility(temperature, ui_eoiltemperatureback);
   toggle_visibility(pressure, ui_eoilpressureback);
   toggle_visibility(voltage, ui_evoltageback);
@@ -302,24 +298,5 @@ void handle_gear_selection(const CanFrame &rxFrame) {
   //lv_snprintf(buf, sizeof(buf), "%d", gear_val);
   update_text(gear_val, ui_egear);
 
-}
-
-void handle_engine_light(const CanFrame &rxFrame) {
-  //ui_eengine         E     0x3E4 7:7 check engine light boolean 0=off, 1=on
-  // ui_eengine
-  // ui_eengineback
-  // 0x3E4 bits 7:7 check engine light boolean 0=off, 1=on
-  u8 engine_light_val = (rxFrame.data[7] >> 7) & 0x01;
-  //lv_snprintf(buf, sizeof(buf), "%d", engine_light_val);
-  if (engine_light_val == 1) 
-  {
-    engine_error = true;
-  }
-  else
-  {
-    engine_error = false;
-  }
-  toggle_max_threshold(engine_light_val, 0, engine_error);
-  dim_text(engine_error, ui_enginedu);
 }
 
