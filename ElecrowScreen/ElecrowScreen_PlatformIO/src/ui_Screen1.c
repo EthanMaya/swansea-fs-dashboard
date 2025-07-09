@@ -21,7 +21,8 @@ const int blueX = (MULTIPLIER * RPM_DISPLAY_MIN) + (blueWidth/2) - OFFSET;
 const int redWidth = (RPM_DISPLAY_MAX - RPM_MAX) * MULTIPLIER;
 const int redX = (MULTIPLIER * RPM_MAX) + (redWidth/2) - OFFSET;
 
-const int y_value = 240 - (BAR_HEIGHT / 2);
+const int y_value = (BAR_HEIGHT / 2) - 240;
+const int bar_ratio = 0.8;
 
 // const uint16_t MID_RANGE = RANGE / 2 - 400;
 
@@ -36,7 +37,7 @@ void ui_Screen1_screen_init(void)
 
     ui_rpmbackgreen = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_rpmbackgreen, greenWidth);//400
-    lv_obj_set_height(ui_rpmbackgreen, 100);
+    lv_obj_set_height(ui_rpmbackgreen, BAR_HEIGHT);
     lv_obj_set_x(ui_rpmbackgreen, greenX); //0
     lv_obj_set_y(ui_rpmbackgreen, y_value);
     lv_obj_set_align(ui_rpmbackgreen, LV_ALIGN_CENTER);
@@ -46,9 +47,9 @@ void ui_Screen1_screen_init(void)
 
     ui_rpmbackblue = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_rpmbackblue, blueWidth);//200
-    lv_obj_set_height(ui_rpmbackblue, 100);
+    lv_obj_set_height(ui_rpmbackblue, BAR_HEIGHT);
     lv_obj_set_x(ui_rpmbackblue, blueX);//-300
-    lv_obj_set_y(ui_rpmbackblue, -190);
+    lv_obj_set_y(ui_rpmbackblue, y_value);
     lv_obj_set_align(ui_rpmbackblue, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmbackblue, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_rpmbackblue, lv_color_hex(0x1100F6), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -56,9 +57,9 @@ void ui_Screen1_screen_init(void)
 
     ui_rpmbackred = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_rpmbackred, redWidth); //200
-    lv_obj_set_height(ui_rpmbackred, 100);
+    lv_obj_set_height(ui_rpmbackred, BAR_HEIGHT);
     lv_obj_set_x(ui_rpmbackred, redX);//300
-    lv_obj_set_y(ui_rpmbackred, -190);
+    lv_obj_set_y(ui_rpmbackred, y_value);
     lv_obj_set_align(ui_rpmbackred, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmbackred, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_rpmbackred, lv_color_hex(0xF60000), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -66,9 +67,9 @@ void ui_Screen1_screen_init(void)
 
     ui_erpmbackswitchup = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_erpmbackswitchup, 400);
-    lv_obj_set_height(ui_erpmbackswitchup, 100);
+    lv_obj_set_height(ui_erpmbackswitchup, BAR_HEIGHT);
     lv_obj_set_x(ui_erpmbackswitchup, 200);
-    lv_obj_set_y(ui_erpmbackswitchup, -190);
+    lv_obj_set_y(ui_erpmbackswitchup, y_value);
     lv_obj_set_align(ui_erpmbackswitchup, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_erpmbackswitchup, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_flag(ui_erpmbackswitchup, LV_OBJ_FLAG_HIDDEN);
@@ -77,9 +78,9 @@ void ui_Screen1_screen_init(void)
 
     ui_erpmbackswitchdown = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_erpmbackswitchdown, 400);
-    lv_obj_set_height(ui_erpmbackswitchdown, 100);
+    lv_obj_set_height(ui_erpmbackswitchdown, BAR_HEIGHT);
     lv_obj_set_x(ui_erpmbackswitchdown, -200);
-    lv_obj_set_y(ui_erpmbackswitchdown, -190);
+    lv_obj_set_y(ui_erpmbackswitchdown, y_value);
     lv_obj_set_align(ui_erpmbackswitchdown, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_erpmbackswitchdown, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_add_flag(ui_erpmbackswitchdown, LV_OBJ_FLAG_HIDDEN);
@@ -91,9 +92,9 @@ void ui_Screen1_screen_init(void)
     lv_bar_set_value(ui_erpmbar, 80, LV_ANIM_OFF);
     lv_bar_set_start_value(ui_erpmbar, 0, LV_ANIM_OFF);
     lv_obj_set_width(ui_erpmbar, 800);
-    lv_obj_set_height(ui_erpmbar, 80);
+    lv_obj_set_height(ui_erpmbar, BAR_HEIGHT * bar_ratio);
     lv_obj_set_x(ui_erpmbar, 0);
-    lv_obj_set_y(ui_erpmbar, -190);
+    lv_obj_set_y(ui_erpmbar, y_value);
     lv_obj_set_align(ui_erpmbar, LV_ALIGN_CENTER);
     lv_obj_set_style_bg_color(ui_erpmbar, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_erpmbar, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -112,7 +113,7 @@ void ui_Screen1_screen_init(void)
 
     ui_rpmfrontgreen = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_rpmfrontgreen, greenWidth);//400
-    lv_obj_set_height(ui_rpmfrontgreen, 100);
+    lv_obj_set_height(ui_rpmfrontgreen, BAR_HEIGHT);
     lv_obj_set_x(ui_rpmfrontgreen, greenX);//0
     lv_obj_set_y(ui_rpmfrontgreen, y_value);
     lv_obj_set_align(ui_rpmfrontgreen, LV_ALIGN_CENTER);
@@ -122,9 +123,9 @@ void ui_Screen1_screen_init(void)
 
     ui_rpmfrontblue = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_rpmfrontblue, blueWidth); //200
-    lv_obj_set_height(ui_rpmfrontblue, 100);
+    lv_obj_set_height(ui_rpmfrontblue, BAR_HEIGHT);
     lv_obj_set_x(ui_rpmfrontblue, blueX);//-300
-    lv_obj_set_y(ui_rpmfrontblue, -190);
+    lv_obj_set_y(ui_rpmfrontblue, y_value);
     lv_obj_set_align(ui_rpmfrontblue, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmfrontblue, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_rpmfrontblue, lv_color_hex(0x1100F6), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -132,9 +133,9 @@ void ui_Screen1_screen_init(void)
 
     ui_rpmfrontred = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_rpmfrontred, redWidth); //200
-    lv_obj_set_height(ui_rpmfrontred, 100);
+    lv_obj_set_height(ui_rpmfrontred, BAR_HEIGHT);
     lv_obj_set_x(ui_rpmfrontred, redX);//300
-    lv_obj_set_y(ui_rpmfrontred, -190);
+    lv_obj_set_y(ui_rpmfrontred, y_value);
     lv_obj_set_align(ui_rpmfrontred, LV_ALIGN_CENTER);
     lv_obj_set_style_radius(ui_rpmfrontred, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_rpmfrontred, lv_color_hex(0xF60000), LV_PART_MAIN | LV_STATE_DEFAULT);
