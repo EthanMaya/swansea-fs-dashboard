@@ -21,7 +21,6 @@
 typedef u_int8_t u8;
 typedef u_int16_t u16;
 
-void handle_speed(const CanFrame &rxFrame);
 void handle_rpm(const CanFrame &rxFrame);
 void handle_engine_voltage(const CanFrame &rxFrame);
 void handle_oil_pressure(const CanFrame &rxFrame);
@@ -67,7 +66,6 @@ void setup()
     Serial.println("CAN bus failed!");
   }
 
-  rule_engine.add_rule(CompareIdentifier(0x370), &handle_speed);
   rule_engine.add_rule(CompareIdentifier(0x360), &handle_rpm);
   rule_engine.add_rule(CompareIdentifier(0x372), &handle_engine_voltage);
   rule_engine.add_rule(CompareIdentifier(0x361), &handle_oil_pressure);
@@ -176,26 +174,7 @@ void display_update() {
 }
 
 
-void handle_speed(const CanFrame &rxFrame) {
-  //ui_espeed          Speed 0x370 0-1 vehicle speed km/h y = x/10
-  // ui_espeed
-  // ui_espeedarc
-  // 0x370; bits 0-1 vehicle speed km/h y = x/10
-  u16 bit0 = rxFrame.data[0];
-  u16 bit1 = rxFrame.data[1];
-  u16 speed_val = ((bit0 << 8) | bit1)/10;
-  update_text(speed_val, ui_espeed);
-  //lv_snprintf(buf, sizeof(buf), "%d", speed_val);
-  lv_arc_set_value(ui_espeedarc, speed_val);
-#if (HAS_DISPLAY)
-// Update display
-// lv_timer_handler();
-// delay(10);
-#else
-  Serial.print("RPM: ");
-  Serial.println(buf);
-#endif
-}
+
 
 void handle_rpm(const CanFrame &rxFrame) {
     //ui_erpm            RPM   0x360 0-1 rpm y = x

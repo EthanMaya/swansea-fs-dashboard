@@ -32,12 +32,9 @@ lv_obj_t * ui_evoltage;
 lv_obj_t * ui_eoiltemperatureback;
 lv_obj_t * ui_oiltemperaturedu;
 lv_obj_t * ui_eoiltemperature;
-lv_obj_t * ui_speeddu;
-lv_obj_t * ui_espeed;
 lv_obj_t * ui_eoilpressureback;
 lv_obj_t * ui_oilpressuredu;
 lv_obj_t * ui_eoilpressure;
-lv_obj_t * ui_espeedarc;
 // CUSTOM VARIABLES  
 
 // EVENTS
