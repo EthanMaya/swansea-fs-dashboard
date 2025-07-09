@@ -522,7 +522,7 @@ if __name__ == '__main__':
     print("init...")
     can.Init()
     print("send data...")
-
+    #360 - 700
     speed = 0x370
     rpm = 0x360
     voltage = 0x372
@@ -540,11 +540,14 @@ if __name__ == '__main__':
     
     speeddata = [0, 0, 9, 9, 9, 9, 9, 9]
     temppressdata = [0, 0, 9, 9, 9, 9]
+
+    a = 0
+    gear =  [9, 9, 9, 9, 9, 9, 9, a]
     
     speed_value = 0
     temppress = 150
 
-    can.Send(gear, data, dlc)
+    #can.Send(gear, data, dlc)
 
     readbuf = []
 
@@ -555,8 +558,14 @@ if __name__ == '__main__':
 
     i = 0
     flashing = False
+    print("working")
     while True:
-        #print("AHHH")
+        for j in range(1):
+            for k in range(0x360, 0x400): #0x701
+                if k != 0x470:
+                    can.Send(k, gear, dlc)
+                
+        print("AHHH")
         led.on()
         #can.Send(gear, data, dlc)
         rpm_value = (rpm_value + 1) % 900
@@ -571,9 +580,9 @@ if __name__ == '__main__':
         speeddata[3] = speed_value & 0xFF
         speeddata[6] = (speed_value >> 8) & 0xFF  
         speeddata[7] = speed_value & 0xFF
-        print(str(speeddata[0]) + "" + str(speeddata[1]))
+        #print(str(speeddata[0]) + "" + str(speeddata[1]))
         can.Send(speed, speeddata, dlc)
-        can.Send(voltage, speeddata, dlc)
+        #can.Send(0x470, speeddata, dlc)
         #temppress = (temppress + 5) % 1200 + 150
         #temppressdata[0] = (temppress >> 8) & 0xFF  
         #temppressdata[1] = temppress & 0xFF
@@ -586,17 +595,33 @@ if __name__ == '__main__':
             i = 0
             flashing = not flashing 
         if flashing:
-            print("flashing")
+            #print("flashing")
             enginedata[7] = 0b10000000
             enginedata[6] = 3 
             can.Send(enginelight, enginedata, dlc)
-            can.Send(gear, enginedata, dlc)
+            #can.Send(gear, enginedata, dlc)
         else:
-            print("working")
+            #print("working")
             enginedata[7] = 0b01111111
             enginedata[6] = 5
             can.Send(enginelight, enginedata, dlc)
-            can.Send(gear, enginedata, dlc)
+        #can.Send(0x360, gear, dlc)
+        #can.Send(0x372, gear, dlc)
+        #can.Send(0x361, gear, dlc)
+        #can.Send(0x3E0, gear, dlc)
+        #can.Send(0x360, gear, dlc)
+        #time.sleep(0.00001)
+        can.Send(0x470, gear, dlc)
+        
+        can.Send(0x360, gear, dlc)
+        can.Send(0x372, gear, dlc)
+        can.Send(0x361, gear, dlc)
+        can.Send(0x3E0, gear, dlc)
+        can.Send(0x360, gear, dlc)
+        print(gear)
+        print("help")
+        a += 1
+        gear[7] = a
         led.off()
         time.sleep(0.01)
         #print("help")
