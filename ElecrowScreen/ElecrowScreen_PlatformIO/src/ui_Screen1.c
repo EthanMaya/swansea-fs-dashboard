@@ -160,11 +160,12 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_style_text_opa(ui_erpm, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_erpm, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
+    
     ui_geardu = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_geardu, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_geardu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_geardu, 301);
-    lv_obj_set_y(ui_geardu, 84);
+    lv_obj_set_x(ui_geardu, 0);
+    lv_obj_set_y(ui_geardu, -40);
     lv_obj_set_align(ui_geardu, LV_ALIGN_CENTER);
     lv_label_set_text(ui_geardu, "Gear");
     lv_obj_set_style_text_font(ui_geardu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -172,10 +173,10 @@ void ui_Screen1_screen_init(void)
     ui_egear = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_egear, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_egear, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_egear, 297);
-    lv_obj_set_y(ui_egear, -29);
+    lv_obj_set_x(ui_egear, 0);
+    lv_obj_set_y(ui_egear, 90);
     lv_obj_set_align(ui_egear, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_egear, "U");
+    lv_label_set_text(ui_egear, "5");
     lv_obj_set_style_text_font(ui_egear, &ui_font_Font250, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eengineback = lv_btn_create(ui_Screen1);
@@ -184,16 +185,18 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_eengineback, 30);
     lv_obj_set_y(ui_eengineback, 0);
     lv_obj_set_align(ui_eengineback, LV_ALIGN_LEFT_MID);
+    lv_obj_add_flag(ui_eengineback, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_set_style_bg_color(ui_eengineback, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_eengineback, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_enginedu = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_enginedu, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_enginedu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_enginedu, 45);
+    lv_obj_set_x(ui_enginedu, 60);
     lv_obj_set_y(ui_enginedu, 0);
     lv_obj_set_align(ui_enginedu, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_enginedu, "Engine");
+    lv_label_set_text(ui_enginedu, "E");
+    lv_obj_add_flag(ui_enginedu, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_set_style_text_font(ui_enginedu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eengine = lv_label_create(ui_Screen1);
@@ -202,43 +205,38 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_eengine, 100);
     lv_obj_set_y(ui_eengine, 0);
     lv_obj_set_align(ui_eengine, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_eengine, "");
+    lv_label_set_text(ui_eengine, "1234");
+    lv_obj_add_flag(ui_eengine, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_set_style_text_font(ui_eengine, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_evoltageback = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_evoltageback, 200);
     lv_obj_set_height(ui_evoltageback, 60);
-    lv_obj_set_x(ui_evoltageback, 30);
-    lv_obj_set_y(ui_evoltageback, -100);
-    lv_obj_set_align(ui_evoltageback, LV_ALIGN_BOTTOM_LEFT);
+    lv_obj_set_align(ui_evoltageback, LV_ALIGN_BOTTOM_MID);
     lv_obj_set_style_bg_color(ui_evoltageback, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_evoltageback, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_voltagedu = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_voltagedu, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_voltagedu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_voltagedu, 60);
-    lv_obj_set_y(ui_voltagedu, -100);
-    lv_obj_set_align(ui_voltagedu, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(ui_voltagedu, "V");
+    lv_obj_set_align(ui_voltagedu, LV_ALIGN_BOTTOM_MID);
+    lv_label_set_text(ui_voltagedu, "Batt           Volt");
     lv_obj_set_style_text_align(ui_voltagedu, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_voltagedu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_evoltage = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_evoltage, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_evoltage, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_evoltage, 100);
-    lv_obj_set_y(ui_evoltage, -100);
-    lv_obj_set_align(ui_evoltage, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(ui_evoltage, "U");
+    lv_obj_set_align(ui_evoltage, LV_ALIGN_BOTTOM_MID);
+    lv_label_set_text(ui_evoltage, "1234");
     lv_obj_set_style_text_align(ui_evoltage, LV_TEXT_ALIGN_RIGHT, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_evoltage, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eoiltemperatureback = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_eoiltemperatureback, 200);
     lv_obj_set_height(ui_eoiltemperatureback, 60);
-    lv_obj_set_x(ui_eoiltemperatureback, 310);
-    lv_obj_set_y(ui_eoiltemperatureback, -75);
+    lv_obj_set_x(ui_eoiltemperatureback, 14);
+    lv_obj_set_y(ui_eoiltemperatureback, 154);
     lv_obj_set_align(ui_eoiltemperatureback, LV_ALIGN_LEFT_MID);
     lv_obj_set_style_bg_color(ui_eoiltemperatureback, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_eoiltemperatureback, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -246,28 +244,29 @@ void ui_Screen1_screen_init(void)
     ui_oiltemperaturedu = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_oiltemperaturedu, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_oiltemperaturedu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_oiltemperaturedu, 340);
-    lv_obj_set_y(ui_oiltemperaturedu, -75);
+    lv_obj_set_x(ui_oiltemperaturedu, 0);
+    lv_obj_set_y(ui_oiltemperaturedu, 90);
     lv_obj_set_align(ui_oiltemperaturedu, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_oiltemperaturedu, "T");
+    lv_label_set_text(ui_oiltemperaturedu, "Temp Deg");
     lv_obj_set_style_text_font(ui_oiltemperaturedu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eoiltemperature = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_eoiltemperature, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_eoiltemperature, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_eoiltemperature, 380);
-    lv_obj_set_y(ui_eoiltemperature, -75);
+    lv_obj_set_x(ui_eoiltemperature, 50);
+    lv_obj_set_y(ui_eoiltemperature, 150);
     lv_obj_set_align(ui_eoiltemperature, LV_ALIGN_LEFT_MID);
-    lv_label_set_text(ui_eoiltemperature, "U");
+    lv_label_set_text(ui_eoiltemperature, "1234");
     lv_obj_set_style_text_font(ui_eoiltemperature, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_speeddu = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_speeddu, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_speeddu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_speeddu, 13);
-    lv_obj_set_y(ui_speeddu, 202);
+    lv_obj_set_x(ui_speeddu, -294);
+    lv_obj_set_y(ui_speeddu, 172);
     lv_obj_set_align(ui_speeddu, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_speeddu, "km/h");
+    lv_label_set_text(ui_speeddu, "Speed");
+    lv_obj_add_flag(ui_speeddu, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_set_style_text_font(ui_speeddu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_espeed = lv_label_create(ui_Screen1);
@@ -276,34 +275,35 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_espeed, 12);
     lv_obj_set_y(ui_espeed, 104);
     lv_obj_set_align(ui_espeed, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_espeed, "U");
+    lv_label_set_text(ui_espeed, "72");
+    lv_obj_add_flag(ui_espeed, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_obj_set_style_text_font(ui_espeed, &ui_font_Font150, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eoilpressureback = lv_btn_create(ui_Screen1);
     lv_obj_set_width(ui_eoilpressureback, 200);
     lv_obj_set_height(ui_eoilpressureback, 60);
-    lv_obj_set_x(ui_eoilpressureback, 590);
-    lv_obj_set_y(ui_eoilpressureback, -45);
-    lv_obj_set_align(ui_eoilpressureback, LV_ALIGN_BOTTOM_LEFT);
+    lv_obj_set_x(ui_eoilpressureback, 0);
+    lv_obj_set_y(ui_eoilpressureback, 150);
+    lv_obj_set_align(ui_eoilpressureback, LV_ALIGN_RIGHT_MID);
     lv_obj_set_style_bg_color(ui_eoilpressureback, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_eoilpressureback, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_oilpressuredu = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_oilpressuredu, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_oilpressuredu, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_oilpressuredu, 620);
-    lv_obj_set_y(ui_oilpressuredu, -50);
-    lv_obj_set_align(ui_oilpressuredu, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(ui_oilpressuredu, "P");
+    lv_obj_set_x(ui_oilpressuredu, 0);
+    lv_obj_set_y(ui_oilpressuredu, 90);
+    lv_obj_set_align(ui_oilpressuredu, LV_ALIGN_RIGHT_MID);
+    lv_label_set_text(ui_oilpressuredu, "Pres kPa");
     lv_obj_set_style_text_font(ui_oilpressuredu, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_eoilpressure = lv_label_create(ui_Screen1);
     lv_obj_set_width(ui_eoilpressure, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(ui_eoilpressure, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_x(ui_eoilpressure, 660);
-    lv_obj_set_y(ui_eoilpressure, -50);
-    lv_obj_set_align(ui_eoilpressure, LV_ALIGN_BOTTOM_LEFT);
-    lv_label_set_text(ui_eoilpressure, "U");
+    lv_obj_set_x(ui_eoilpressure, -50);
+    lv_obj_set_y(ui_eoilpressure, 150);
+    lv_obj_set_align(ui_eoilpressure, LV_ALIGN_RIGHT_MID);
+    lv_label_set_text(ui_eoilpressure, "1234");
     lv_obj_set_style_text_font(ui_eoilpressure, &lv_font_montserrat_48, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_espeedarc = lv_arc_create(ui_Screen1);
@@ -312,12 +312,13 @@ void ui_Screen1_screen_init(void)
     lv_obj_set_x(ui_espeedarc, 11);
     lv_obj_set_y(ui_espeedarc, 121);
     lv_obj_set_align(ui_espeedarc, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_espeedarc, LV_OBJ_FLAG_HIDDEN);     /// Flags
     lv_arc_set_value(ui_espeedarc, 50);
     lv_obj_set_style_arc_color(ui_espeedarc, lv_color_hex(0x1100FF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_opa(ui_espeedarc, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_width(ui_espeedarc, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_rounded(ui_espeedarc, false, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_arc_set_range(ui_espeedarc, 0, 120);
+    //lv_arc_set_range(ui_espeedarc, 0, 120);
 
     lv_obj_set_style_arc_color(ui_espeedarc, lv_color_hex(0x00FF15), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_opa(ui_espeedarc, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
