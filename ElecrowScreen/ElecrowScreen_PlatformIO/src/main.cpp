@@ -77,7 +77,6 @@ void loop() {
     //Serial.println("In loop");
     rule_engine.run(rxFrame);
   }
-  display_update();
   if (update)
   {
     lv_timer_handler();
@@ -85,62 +84,14 @@ void loop() {
   }
 }
 
-void toggle_min_threshold(u16 value, u16 min_value, boolean &condition) {
-  if (value < min_value) {
-    condition = true;
-  } else {
-    condition = false;
-  }
-}
-void toggle_max_threshold(u16 value, u16 max_value, boolean &condition) {
-  if (value > max_value) 
-  {
-    condition = true;
-  }
-  else 
-  {
-    condition = false;
-  }
-  
-}
+
 
 void update_text(u16 value, lv_obj_t *ui_element) {
   lv_snprintf(buf, sizeof(buf), "%d", value);
   lv_label_set_text(ui_element, buf);
   update = true;
 }
-bool is_visible(lv_obj_t *o) { return !lv_obj_has_flag(o, LV_OBJ_FLAG_HIDDEN); }
-void toggle_visibility(boolean condition, lv_obj_t *ui_element) {
-  boolean toggle_flag = is_visible(ui_element); //true clear
-  if (condition)
-  {
-    update = true;
-  }
-  else if (toggle_flag == false)
-  {
-    toggle_flag = true;
-    update = true;
-  }
 
-  if (update) 
-  {
-    if (toggle_flag) 
-    {
-      lv_obj_add_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
-    } 
-    else 
-    {
-      lv_obj_clear_flag(ui_element, LV_OBJ_FLAG_HIDDEN);
-    }
-    }
-}
-
-
-void display_update() {
-
-  toggle_visibility(rpm_up, ui_erpmbackswitchup);
-  toggle_visibility(rpm_down, ui_erpmbackswitchdown);
-}
 
 
 
@@ -156,17 +107,6 @@ void handle_rpm(const CanFrame &rxFrame) {
   u16 bit1 = rxFrame.data[1];
   u16 rpm_val = ((bit0 << 8) | bit1);
   update_text(rpm_val, ui_erpm);
-  lv_bar_set_value(ui_erpmbar, rpm_val, LV_ANIM_OFF);
-  toggle_max_threshold(rpm_val, RPM_MAX, rpm_up);
-  toggle_min_threshold(rpm_val, RPM_MIN, rpm_down);
-#if (HAS_DISPLAY)
-  // Update display
-  // lv_timer_handler();
-  // delay(10);
-#else
-  Serial.print("RPM: ");
-  Serial.println(buf);
-#endif
 }
 
 
